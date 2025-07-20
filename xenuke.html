@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenuke Nuke Bot 3.0 - 一款終極 Discord 自動化工具，提供伺服器摧毀、進階訊息刷屏、雲端備份、性能分析及角色管理功能，僅限學術與測試用途。">
+    <meta name="keywords" content="Xenuke, Nuke Bot, Discord Bot, Server Automation, Testing Tool, Discord Management">
+    <meta name="author" content="lighting_moon">
+    <meta name="robots" content="index, follow">
+    <title>Xenuke Nuke Bot 3.0 - 終極毀滅與掌控</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Advanced Particle Background */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 77, 77, 0.7), transparent);
+            border-radius: 50%;
+            animation: explode 8s infinite ease-in-out;
+        }
+
+        @keyframes explode {
+            0% { transform: translateY(0) scale(0); opacity: 0.8; }
+            50% { transform: translateY(-50vh) scale(1.5); opacity: 0.3; }
+            100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #ff4d4d;
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end) forwards, blink-caret 0.75s step-end infinite, glow 2s infinite alternate;
+        }
+
+        header p {
+            font-size: 1.8rem;
+            color: #cccccc;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 3.5s forwards;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #ff4d4d; }
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px rgba(255, 77, 77, 0.5); }
+            100% { text-shadow: 0 0 15px rgba(255, 77, 77, 0.8); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section {
+            padding: 80px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #ffffff;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            width: 60px;
+            height: 4px;
+            background: #ff4d4d;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: expand 1s ease-out;
+        }
+
+        @keyframes expand {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+
+        .features-grid, .changelog-grid, .faq-grid, .usecases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card, .changelog-card, .faq-card, .usecase-card {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            opacity: 0;
+            animation: cardFadeIn 0.5s ease-out forwards;
+            border: 1px solid #2a2a2a;
+        }
+
+        .feature-card:nth-child(1), .changelog-card:nth-child(1), .faq-card:nth-child(1), .usecase-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2), .changelog-card:nth-child(2), .faq-card:nth-child(2), .usecase-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3), .changelog-card:nth-child(3), .faq-card:nth-child(3), .usecase-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4), .changelog-card:nth-child(4), .faq-card:nth-child(4), .usecase-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-card:hover, .changelog-card:hover, .faq-card:hover, .usecase-card:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 8px 20px rgba(255, 77, 77, 0.5);
+            border-color: #ff4d4d;
+        }
+
+        .feature-card h3, .changelog-card h3, .faq-card h3, .usecase-card h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #ff4d4d;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card p, .changelog-card p, .faq-card p, .usecase-card p {
+            font-size: 1rem;
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        .mission, .about, .technical, .usecases, .changelog, .faq, .usage, .warning, .links {
+            background: #0f0f0f;
+        }
+
+        .mission p, .about p, .technical p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            color: #cccccc;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .usage ul {
+            max-width: 600px;
+            margin: 0 auto;
+            list-style: none;
+            font-size: 1.1rem;
+            color: #cccccc;
+        }
+
+        .usage li {
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 30px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .usage li:hover {
+            color: #ff4d4d;
+            transform: translateX(10px);
+        }
+
+        .usage li::before {
+            content: '➤';
+            position: absolute;
+            left: 0;
+            color: #ff4d4d;
+            font-size: 1.2rem;
+        }
+
+        .usage code {
+            background: #2a2a2a;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #ff4d4d;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .progress-bar {
+            background: #2a2a2a;
+            border-radius: 5px;
+            height: 10px;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            background: #ff4d4d;
+            width: 0;
+            height: 100%;
+            position: absolute;
+            animation: progress 3s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        .warning {
+            background: #2a0a0a;
+            text-align: center;
+        }
+
+        .warning p {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            color: #ff9999;
+            line-height: 1.8;
+        }
+
+        .links .link-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .links a {
+            background: #ff4d4d;
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .links a:hover {
+            background: #cc3d3d;
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 0 25px rgba(255, 77, 77, 0.7);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 77, 77, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+        }
+
+        footer {
+            background: #1a1a1a;
+            padding: 40px 0;
+            text-align: center;
+            font-size: 1rem;
+            color: #cccccc;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.8rem;
+            }
+
+            header p {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 2.2rem;
+            }
+
+            .features-grid, .changelog-grid, .faq-grid, .usecases-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .links a {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles"></div>
+    <header>
+        <div class="container">
+            <h1>💣 Xenuke Nuke Bot 3.0</h1>
+            <p>終極毀滅與掌控，重新定義 Discord 自動化！</p>
+        </div>
+    </header>
+
+    <section class="mission">
+        <div class="container">
+            <h2>📜 核心使命</h2>
+            <p>
+                Xenuke Nuke Bot 3.0 是 Discord 自動化的巔峰之作，旨在提供無與倫比的伺服器控制與破壞力。我們的使命是打造一款終極工具，讓用戶在學術研究與測試環境中探索 Discord 的極限可能。從高效的伺服器管理到進階的訊息刷屏，Xenuke 3.0 以無情的效率和創新的技術，重新定義數位戰場。
+            </p>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>🔥 功能亮點</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🔥 伺服器快速摧毀</h3>
+                    <p>一鍵清除所有頻道、角色和成員，瞬間重塑伺服器。3.0 版本優化執行速度與穩定性，支持高達 250 個頻道的快速創建與刪除。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💬 進階 Spam 引擎</h3>
+                    <p>支援多語言訊息刷屏，內建速率控制與隨機化功能，自訂嵌入訊息讓每一則訊息充滿威懾力，完美適應不同場景。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎮 智慧控制系統</h3>
+                    <p>基於斜線指令（Slash Commands），新增多層密鑰驗證與操作日誌，確保只有授權用戶能啟動，並提供完整追蹤。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 實時性能分析</h3>
+                    <p>監控 CPU、記憶體、網路流量與指令執行時間，提供進度條視覺化展示，確保 Xenuke 在高負載下穩定運行。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💾 雲端備份與還原</h3>
+                    <p>自動備份頻道、角色與權限設定，支持雲端儲存與一鍵還原，保護重要數據免受意外損失。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎨 深度個性化</h3>
+                    <p>自動更改伺服器名稱、頭像與主題，新增批量頻道重命名與自訂通知功能，打造獨特的 Xenuke 印記。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ 成員管理</h3>
+                    <p>支援快速踢出或封鎖所有成員，並向每個成員發送自訂 DM，強化伺服器掌控能力。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚙️ 進階角色管理</h3>
+                    <p>自動刪除現有角色並創建多達 50 個垃圾角色，隨機化名稱與顏色，增加伺服器混亂度。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="technical">
+        <div class="container">
+            <h2>🛠️ 技術規格</h2>
+            <p>
+                Xenuke Nuke Bot 3.0 採用高效的 Python 與 Discord.py 框架，整合 aiohttp 進行非同步 API 請求，確保低延遲操作。內建速率限制處理與錯誤恢復機制，支援高達 5000 則訊息的刷屏任務，並提供即時系統監控（CPU、記憶體、網路）。所有操作均通過多層密鑰驗證，確保安全性與可控性。
+            </p>
+            <div class="progress-bar"></div>
+        </div>
+    </section>
+
+    <section class="usecases">
+        <div class="container">
+            <h2>💡 使用案例</h2>
+            <div class="usecases-grid">
+                <div class="usecase-card">
+                    <h3>🧪 伺服器壓力測試</h3>
+                    <p>模擬高負載環境，測試 Discord 伺服器的穩定性與管理能力，適用於開發者與管理員。</p>
+                </div>
+                <div class="usecase-card">
+                    <h3>📚 學術研究</h3>
+                    <p>探索 Discord API 的極限，分析伺服器行為與自動化工具的性能，助力學術實驗。</p>
+                </div>
+                <div class="usecase-card">
+                    <h3>🛡️ 伺服器重組</h3>
+                    <p>快速清除無用頻道與角色，重新定義伺服器結構，適合需要快速重建的管理員。</p>
+                </div>
+                <div class="usecase-card">
+                    <h3>🔍 安全測試</h3>
+                    <p>模擬攻擊場景，測試伺服器權限設定與保護措施，幫助提升安全性。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about">
+        <div class="container">
+            <h2>👨‍💻 關於開發者</h2>
+            <p>
+                Xenuke Nuke Bot 3.0 由 <strong>lighting_moon</strong> 打造，一位專注於 Discord 自動化技術的創新程式設計師。憑藉對高效工具的熱情，lighting_moon 將 Xenuke 升級為 3.0 版本，整合進階功能如雲端備份、性能分析與多層驗證，致力於為學術與測試場景提供終極解決方案。
+            </p>
+        </div>
+    </section>
+
+    <section class="changelog">
+        <div class="container">
+            <h2>📋 更新日誌</h2>
+            <div class="changelog-grid">
+                <div class="changelog-card">
+                    <h3>🚀 3.0 - 2025/07</h3>
+                    <p>新增進階 Spam 引擎、雲端備份、多層密鑰驗證、性能分析、成員管理與角色管理，提升效率與安全性。</p>
+                </div>
+                <div class="changelog-card">
+                    <h3>🔧 2.7 - 2024/12</h3>
+                    <p>引入斜線指令與基本備份功能，優化伺服器摧毀速度與穩定性。</p>
+                </div>
+                <div class="changelog-card">
+                    <h3>🌟 2.5 - 2024/09</h3>
+                    <p>首次實現系統監控與垃圾頻道生成，奠定 Xenuke 的核心功能。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq">
+        <div class="container">
+            <h2>❓ 常見問題</h2>
+            <div class="faq-grid">
+                <div class="faq-card">
+                    <h3>🔍 Xenuke 3.0 是否安全？</h3>
+                    <p>是的，3.0 版本採用多層密鑰驗證與操作日誌，確保只有授權用戶能操作。請僅用於合法測試用途。</p>
+                </div>
+                <div class="faq-card">
+                    <h3>⚙️ 如何安裝 Xenuke？</h3>
+                    <p>通過 Discord 邀請連結加入 Xenuke，使用 <code>/key</code> 獲取密鑰，然後執行 <code>/nuke</code> 或 <code>/nuke_pro</code>。詳見 YouTube 教學。</p>
+                </div>
+                <div class="faq-card">
+                    <h3>🛠️ 是否支援自訂功能？</h3>
+                    <p>3.0 支援自訂訊息、伺服器名稱與頭像，未來將開放 API 介面供進階開發者使用。</p>
+                </div>
+                <div class="faq-card">
+                    <h3>📈 性能監控如何運作？</h3>
+                    <p>使用 <code>/monitor</code> 查看即時 CPU、記憶體與網路流量，內建進度條展示資源使用情況。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="usage">
+        <div class="container">
+            <h2>🌟 使用方法</h2>
+            <ul>
+                <li><strong>獲取密鑰：</strong> 使用 <code>/key</code> 獲取授權密鑰，啟動 Xenuke 3.0 的全部功能。</li>
+                <li><strong>執行炸群：</strong> 使用 <code>/nuke</code> 或 <code>/nuke_pro</code> 指定伺服器 ID 和密鑰，啟動摧毀模式。</li>
+                <li><strong>監控性能：</strong> 使用 <code>/monitor</code> 查看 CPU、記憶體、網路流量與指令執行時間。</li>
+                <li><strong>備份與還原：</strong> 使用 <code>/backup</code> 儲存伺服器數據，<code>/restore</code> 快速還原。</li>
+                <li><strong>自訂操作：</strong> 使用 <code>/nuke_pro</code> 自訂訊息、伺服器名稱與頭像，實現個性化摧毀。</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="warning">
+        <div class="container">
+            <h2>📛 警告</h2>
+            <p>
+                Xenuke Nuke Bot 3.0 是一款極具破壞力的工具，僅限於學術研究與授權測試環境。未經許可使用可能違反 Discord 使用條款，導致帳號封禁。開發者 <strong>lighting_moon</strong> 對任何濫用行為的後果概不負責。請謹慎操作，尊重數位倫理與法規。
+            </p>
+        </div>
+    </section>
+
+    <section class="links">
+        <div class="container">
+            <h2>🔗 相關連結</h2>
+            <div class="link-buttons">
+                <a href="https://discord.gg/WMXfrj6EsU" aria-label="加入 Discord 社群">Discord 社群</a>
+                <a href="https://youtu.be/Pjec4Bx6FJM" aria-label="觀看 YouTube 教學影片">YouTube 教學</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>💥 Xenuke Nuke Bot 3.0 — 終極毀滅與掌控，由您釋放！</p>
+            <p>Developed by lighting_moon | © 2025 All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        // Advanced Particle Background
+        const particlesContainer = document.getElementById('particles');
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.width = `${Math.random() * 6 + 3}px`;
+            particle.style.height = particle.style.width;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.top = `${Math.random() * 100}vh`;
+            particle.style.animationDuration = `${Math.random() * 4 + 4}s`;
+            particlesContainer.appendChild(particle);
+            setTimeout(() => particle.remove(), 8000);
+        }
+        setInterval(createParticle, 150);
+
+        // Intersection Observer for section fade-in
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>
