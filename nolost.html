@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網站正在製作中</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://source.unsplash.com/random/1920x1080/?construction'); /* 使用 Unsplash 隨機圖片，主題為 construction，可替換為自己的圖片 URL */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* 固定背景，讓內容滾動時有視差效果 */
+            color: #333;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+            animation: backgroundMove 30s ease-in-out infinite alternate; /* 添加背景圖片移動動畫 */
+        }
+        @keyframes backgroundMove {
+            0% {
+                background-position: center top;
+            }
+            100% {
+                background-position: center bottom;
+            }
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9); /* 半透明背景，讓文字更易讀 */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #ff6b6b;
+            font-size: 2em;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .credit {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 30px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>網站正在製作中</h1>
+        <p>我們正在努力製作一個精彩的網站，請耐心等待！</p>
+        <div class="credit">
+            by SLANuke 幫助 nolost 製作
+        </div>
+    </div>
+</body>
+</html>
