@@ -1,557 +1,450 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Xenuke Nuke Bot 3.0 - 一款終極 Discord 自動化工具，提供伺服器摧毀、進階訊息刷屏、雲端備份、性能分析及角色管理功能，僅限學術與測試用途。">
-    <meta name="keywords" content="Xenuke, Nuke Bot, Discord Bot, Server Automation, Testing Tool, Discord Management">
-    <meta name="author" content="lighting_moon">
-    <meta name="robots" content="index, follow">
-    <title>Xenuke Nuke Bot 3.0 - 終極毀滅與掌控</title>
+    <title>LightningNuke Bot - 終極 Discord 工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
         body {
+            font-family: 'Inter', sans-serif;
             background-color: #0a0a0a;
-            color: #ffffff;
-            line-height: 1.6;
-            position: relative;
-            overflow-x: hidden;
+            color: #e5e5e5;
         }
-
-        /* Advanced Particle Background */
-        #particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
+        .hero-bg {
+            background-image: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 1)), url('https://placehold.co/1920x1080/000000/FFFFFF?text=SERVER+CHAOS');
+            background-size: cover;
+            background-position: center;
         }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(255, 77, 77, 0.7), transparent);
-            border-radius: 50%;
-            animation: explode 8s infinite ease-in-out;
+        .text-glow {
+            text-shadow: 0 0 8px rgba(99, 102, 241, 0.6), 0 0 20px rgba(139, 92, 246, 0.4);
         }
-
-        @keyframes explode {
-            0% { transform: translateY(0) scale(0); opacity: 0.8; }
-            50% { transform: translateY(-50vh) scale(1.5); opacity: 0.3; }
-            100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+        .card {
+            background-color: rgba(23, 23, 23, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .btn-primary {
+            background-image: linear-gradient(to right, #4f46e5, #7c3aed);
         }
-
-        header {
-            background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
-            padding: 120px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+        .btn-secondary {
+            background-color: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        header h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            color: #ff4d4d;
-            overflow: hidden;
-            white-space: nowrap;
-            animation: typing 3s steps(40, end) forwards, blink-caret 0.75s step-end infinite, glow 2s infinite alternate;
+        .feature-icon {
+            background-image: linear-gradient(to bottom right, #4f46e5, #a855f7);
         }
-
-        header p {
-            font-size: 1.8rem;
-            color: #cccccc;
-            opacity: 0;
-            animation: fadeIn 1s ease-out 3.5s forwards;
+        .code-block {
+            background-color: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-image: linear-gradient(to right, #4f46e5, #a855f7);
+            margin: 1rem auto 0;
+            border-radius: 2px;
         }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: #ff4d4d; }
-        }
-
-        @keyframes glow {
-            0% { text-shadow: 0 0 5px rgba(255, 77, 77, 0.5); }
-            100% { text-shadow: 0 0 15px rgba(255, 77, 77, 0.8); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        section {
-            padding: 80px 0;
+        /* Scroll reveal animation */
+        .reveal {
             opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-
-        section.visible {
+        .reveal.visible {
             opacity: 1;
             transform: translateY(0);
         }
-
-        h2 {
-            font-size: 2.8rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 40px;
-            color: #ffffff;
-            position: relative;
-        }
-
-        h2::after {
+        /* Timeline */
+        .timeline-item::before {
             content: '';
-            width: 60px;
-            height: 4px;
-            background: #ff4d4d;
             position: absolute;
-            bottom: -10px;
-            left: 50%;
+            left: 1.25rem;
+            top: 1.25rem;
+            bottom: -1.25rem;
+            width: 2px;
+            background-color: rgba(255, 255, 255, 0.1);
             transform: translateX(-50%);
-            animation: expand 1s ease-out;
         }
-
-        @keyframes expand {
-            from { width: 0; }
-            to { width: 60px; }
+        .timeline-item:last-child::before {
+            display: none;
         }
-
-        .features-grid, .changelog-grid, .faq-grid, .usecases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .feature-card, .changelog-card, .faq-card, .usecase-card {
-            background: #1a1a1a;
-            padding: 25px;
-            border-radius: 12px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            opacity: 0;
-            animation: cardFadeIn 0.5s ease-out forwards;
-            border: 1px solid #2a2a2a;
-        }
-
-        .feature-card:nth-child(1), .changelog-card:nth-child(1), .faq-card:nth-child(1), .usecase-card:nth-child(1) { animation-delay: 0.1s; }
-        .feature-card:nth-child(2), .changelog-card:nth-child(2), .faq-card:nth-child(2), .usecase-card:nth-child(2) { animation-delay: 0.2s; }
-        .feature-card:nth-child(3), .changelog-card:nth-child(3), .faq-card:nth-child(3), .usecase-card:nth-child(3) { animation-delay: 0.3s; }
-        .feature-card:nth-child(4), .changelog-card:nth-child(4), .faq-card:nth-child(4), .usecase-card:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes cardFadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+        /* Showcase Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .feature-card:hover, .changelog-card:hover, .faq-card:hover, .usecase-card:hover {
-            transform: scale(1.05) rotate(1deg);
-            box-shadow: 0 8px 20px rgba(255, 77, 77, 0.5);
-            border-color: #ff4d4d;
-        }
-
-        .feature-card h3, .changelog-card h3, .faq-card h3, .usecase-card h3 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: #ff4d4d;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .feature-card p, .changelog-card p, .faq-card p, .usecase-card p {
-            font-size: 1rem;
-            color: #cccccc;
-            line-height: 1.8;
-        }
-
-        .mission, .about, .technical, .usecases, .changelog, .faq, .usage, .warning, .links {
-            background: #0f0f0f;
-        }
-
-        .mission p, .about p, .technical p {
-            max-width: 800px;
-            margin: 0 auto;
-            font-size: 1.2rem;
-            color: #cccccc;
-            text-align: center;
-            line-height: 1.8;
-        }
-
-        .usage ul {
-            max-width: 600px;
-            margin: 0 auto;
-            list-style: none;
-            font-size: 1.1rem;
-            color: #cccccc;
-        }
-
-        .usage li {
-            margin-bottom: 20px;
-            position: relative;
-            padding-left: 30px;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .usage li:hover {
-            color: #ff4d4d;
-            transform: translateX(10px);
-        }
-
-        .usage li::before {
-            content: '➤';
-            position: absolute;
-            left: 0;
-            color: #ff4d4d;
-            font-size: 1.2rem;
-        }
-
-        .usage code {
-            background: #2a2a2a;
-            padding: 3px 8px;
-            border-radius: 4px;
-            color: #ff4d4d;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .progress-bar {
-            background: #2a2a2a;
-            border-radius: 5px;
-            height: 10px;
-            width: 100%;
-            max-width: 600px;
-            margin: 20px auto;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar::after {
-            content: '';
-            background: #ff4d4d;
-            width: 0;
-            height: 100%;
-            position: absolute;
-            animation: progress 3s ease-in-out infinite;
-        }
-
-        @keyframes progress {
-            0% { width: 0; }
-            50% { width: 100%; }
-            100% { width: 0; }
-        }
-
-        .warning {
-            background: #2a0a0a;
-            text-align: center;
-        }
-
-        .warning p {
-            max-width: 600px;
-            margin: 0 auto;
-            font-size: 1.2rem;
-            color: #ff9999;
-            line-height: 1.8;
-        }
-
-        .links .link-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-
-        .links a {
-            background: #ff4d4d;
-            color: #ffffff;
-            padding: 14px 28px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-            animation: pulse 2s infinite;
-        }
-
-        .links a:hover {
-            background: #cc3d3d;
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 0 25px rgba(255, 77, 77, 0.7);
-            animation: none;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 77, 77, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
-        }
-
-        footer {
-            background: #1a1a1a;
-            padding: 40px 0;
-            text-align: center;
-            font-size: 1rem;
-            color: #cccccc;
-            border-top: 1px solid #2a2a2a;
-        }
-
-        footer p {
-            margin-bottom: 10px;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.8rem;
-            }
-
-            header p {
-                font-size: 1.5rem;
-            }
-
-            h2 {
-                font-size: 2.2rem;
-            }
-
-            .features-grid, .changelog-grid, .faq-grid, .usecases-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .links a {
-                padding: 12px 20px;
-                font-size: 0.9rem;
-            }
+        .message-appear {
+            animation: fadeIn 0.3s ease-out forwards;
         }
     </style>
 </head>
-<body>
-    <div id="particles"></div>
-    <header>
-        <div class="container">
-            <h1>💣 Xenuke Nuke Bot 3.0</h1>
-            <p>終極毀滅與掌控，重新定義 Discord 自動化！</p>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tighter text-glow">⚡ LightningNuke</h1>
+            <a href="https://discord.gg/kqy7k2cgsq" target="_blank" class="hidden md:inline-block px-5 py-2 text-sm font-semibold rounded-lg btn-primary hover:opacity-90 transition-opacity">加入社群</a>
         </div>
     </header>
 
-    <section class="mission">
-        <div class="container">
-            <h2>📜 核心使命</h2>
-            <p>
-                Xenuke Nuke Bot 3.0 是 Discord 自動化的巔峰之作，旨在提供無與倫比的伺服器控制與破壞力。我們的使命是打造一款終極工具，讓用戶在學術研究與測試環境中探索 Discord 的極限可能。從高效的伺服器管理到進階的訊息刷屏，Xenuke 3.0 以無情的效率和創新的技術，重新定義數位戰場。
-            </p>
-        </div>
-    </section>
-
-    <section class="features">
-        <div class="container">
-            <h2>🔥 功能亮點</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>🔥 伺服器快速摧毀</h3>
-                    <p>一鍵清除所有頻道、角色和成員，瞬間重塑伺服器。3.0 版本優化執行速度與穩定性，支持高達 250 個頻道的快速創建與刪除。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>💬 進階 Spam 引擎</h3>
-                    <p>支援多語言訊息刷屏，內建速率控制與隨機化功能，自訂嵌入訊息讓每一則訊息充滿威懾力，完美適應不同場景。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🎮 智慧控制系統</h3>
-                    <p>基於斜線指令（Slash Commands），新增多層密鑰驗證與操作日誌，確保只有授權用戶能啟動，並提供完整追蹤。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📊 實時性能分析</h3>
-                    <p>監控 CPU、記憶體、網路流量與指令執行時間，提供進度條視覺化展示，確保 Xenuke 在高負載下穩定運行。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>💾 雲端備份與還原</h3>
-                    <p>自動備份頻道、角色與權限設定，支持雲端儲存與一鍵還原，保護重要數據免受意外損失。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🎨 深度個性化</h3>
-                    <p>自動更改伺服器名稱、頭像與主題，新增批量頻道重命名與自訂通知功能，打造獨特的 Xenuke 印記。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🛡️ 成員管理</h3>
-                    <p>支援快速踢出或封鎖所有成員，並向每個成員發送自訂 DM，強化伺服器掌控能力。</p>
-                </div>
-                <div class="feature-card">
-                    <h3>⚙️ 進階角色管理</h3>
-                    <p>自動刪除現有角色並創建多達 50 個垃圾角色，隨機化名稱與顏色，增加伺服器混亂度。</p>
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg min-h-screen flex items-center justify-center pt-20">
+            <div class="text-center px-6 reveal">
+                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-glow">秩序的終結者</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-300">這不是結束，甚至不是序幕。這是您痛苦的黎明。體驗 LightningNuke 帶來的絕對混沌與力量。</p>
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="https://discord.gg/kqy7k2cgsq" target="_blank" class="px-8 py-4 text-lg font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">釋放風暴</a>
+                    <a href="#features" class="px-8 py-4 text-lg font-bold rounded-lg btn-secondary hover:bg-gray-800 transition-colors">探索功能</a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="technical">
-        <div class="container">
-            <h2>🛠️ 技術規格</h2>
-            <p>
-                Xenuke Nuke Bot 3.0 採用高效的 Python 與 Discord.py 框架，整合 aiohttp 進行非同步 API 請求，確保低延遲操作。內建速率限制處理與錯誤恢復機制，支援高達 5000 則訊息的刷屏任務，並提供即時系統監控（CPU、記憶體、網路）。所有操作均通過多層密鑰驗證，確保安全性與可控性。
-            </p>
-            <div class="progress-bar"></div>
-        </div>
-    </section>
-
-    <section class="usecases">
-        <div class="container">
-            <h2>💡 使用案例</h2>
-            <div class="usecases-grid">
-                <div class="usecase-card">
-                    <h3>🧪 伺服器壓力測試</h3>
-                    <p>模擬高負載環境，測試 Discord 伺服器的穩定性與管理能力，適用於開發者與管理員。</p>
+        <!-- Features Section -->
+        <section id="features" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">核心功能</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">為徹底的伺服器重置而設計的精密武器庫。</p>
                 </div>
-                <div class="usecase-card">
-                    <h3>📚 學術研究</h3>
-                    <p>探索 Discord API 的極限，分析伺服器行為與自動化工具的性能，助力學術實驗。</p>
-                </div>
-                <div class="usecase-card">
-                    <h3>🛡️ 伺服器重組</h3>
-                    <p>快速清除無用頻道與角色，重新定義伺服器結構，適合需要快速重建的管理員。</p>
-                </div>
-                <div class="usecase-card">
-                    <h3>🔍 安全測試</h3>
-                    <p>模擬攻擊場景，測試伺服器權限設定與保護措施，幫助提升安全性。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature Cards -->
+                    <div class="card p-8 rounded-2xl reveal"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></div><h4 class="text-2xl font-bold mb-2">頻道與訊息轟炸</h4><p class="text-gray-400">瞬間刪除所有現有頻道，並創建大量新頻道，以海量 @everyone 訊息淹沒伺服器。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 100ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="22" y1="8" x2="18" y2="12"></line><line x1="18" y1="8" x2="22" y2="12"></line></svg></div><h4 class="text-2xl font-bold mb-2">極速成員管理</h4><p class="text-gray-400">在極短時間內停權所有伺服器成員，並將他們的暱稱統一更改，徹底瓦解社群結構。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 200ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><path d="m12 12-4 4 2 2 4-4-2-2z"></path></svg></div><h4 class="text-2xl font-bold mb-2">伺服器全面改造</h4><p class="text-gray-400">立即更換伺服器名稱與頭像，刪除所有身份組，並創建大量垃圾身份組，宣告新的統治。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 300ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg></div><h4 class="text-2xl font-bold mb-2">DM 風暴</h4><p class="text-gray-400">對伺服器中的每一位成員發動私訊（DM）轟炸，將混亂直接傳遞到他們的通知中心。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 400ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg></div><h4 class="text-2xl font-bold mb-2">安全與冷卻</h4><p class="text-gray-400">內建指令冷卻機制與目標伺服器保護，確保力量不會被濫用。執行後自動退出，不留痕跡。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 500ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg></div><h4 class="text-2xl font-bold mb-2">高效異步架構</h4><p class="text-gray-400">基於 `aiohttp` 與 `asyncio` 打造，所有操作高度並行，以閃電般的速度完成任務，最大化破壞效率。</p></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="about">
-        <div class="container">
-            <h2>👨‍💻 關於開發者</h2>
-            <p>
-                Xenuke Nuke Bot 3.0 由 <strong>lighting_moon</strong> 打造，一位專注於 Discord 自動化技術的創新程式設計師。憑藉對高效工具的熱情，lighting_moon 將 Xenuke 升級為 3.0 版本，整合進階功能如雲端備份、性能分析與多層驗證，致力於為學術與測試場景提供終極解決方案。
-            </p>
-        </div>
-    </section>
-
-    <section class="changelog">
-        <div class="container">
-            <h2>📋 更新日誌</h2>
-            <div class="changelog-grid">
-                <div class="changelog-card">
-                    <h3>🚀 3.0 - 2025/07</h3>
-                    <p>新增進階 Spam 引擎、雲端備份、多層密鑰驗證、性能分析、成員管理與角色管理，提升效率與安全性。</p>
-                </div>
-                <div class="changelog-card">
-                    <h3>🔧 2.7 - 2024/12</h3>
-                    <p>引入斜線指令與基本備份功能，優化伺服器摧毀速度與穩定性。</p>
-                </div>
-                <div class="changelog-card">
-                    <h3>🌟 2.5 - 2024/09</h3>
-                    <p>首次實現系統監控與垃圾頻道生成，奠定 Xenuke 的核心功能。</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="faq">
-        <div class="container">
-            <h2>❓ 常見問題</h2>
-            <div class="faq-grid">
-                <div class="faq-card">
-                    <h3>🔍 Xenuke 3.0 是否安全？</h3>
-                    <p>是的，3.0 版本採用多層密鑰驗證與操作日誌，確保只有授權用戶能操作。請僅用於合法測試用途。</p>
-                </div>
-                <div class="faq-card">
-                    <h3>⚙️ 如何安裝 Xenuke？</h3>
-                    <p>通過 Discord 邀請連結加入 Xenuke，使用 <code>/key</code> 獲取密鑰，然後執行 <code>/nuke</code> 或 <code>/nuke_pro</code>。詳見 YouTube 教學。</p>
-                </div>
-                <div class="faq-card">
-                    <h3>🛠️ 是否支援自訂功能？</h3>
-                    <p>3.0 支援自訂訊息、伺服器名稱與頭像，未來將開放 API 介面供進階開發者使用。</p>
-                </div>
-                <div class="faq-card">
-                    <h3>📈 性能監控如何運作？</h3>
-                    <p>使用 <code>/monitor</code> 查看即時 CPU、記憶體與網路流量，內建進度條展示資源使用情況。</p>
+        <!-- Showcase Section -->
+        <section id="showcase" class="py-20 sm:py-32 bg-black/20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal"><h3 class="text-4xl md:text-5xl font-black section-title">混沌展示</h3><p class="mt-4 max-w-2xl mx-auto text-gray-400">親眼見證執行 `!nuke` 後的末日景象。</p></div>
+                <div class="max-w-4xl mx-auto bg-[#36393f] rounded-lg shadow-2xl overflow-hidden reveal">
+                    <div class="p-4 bg-[#202225] flex items-center justify-between"><div class="flex items-center space-x-2"><img src="https://i.pinimg.com/736x/4d/1b/47/4d1b4727ae6fff4be96676918c9815f1.jpg" class="w-8 h-8 rounded-full" alt="Server Icon"><h4 class="font-bold text-white">nuke by lightningnuke</h4></div><div class="flex space-x-2"><div class="w-3 h-3 bg-red-500 rounded-full"></div><div class="w-3 h-3 bg-yellow-500 rounded-full"></div><div class="w-3 h-3 bg-green-500 rounded-full"></div></div></div>
+                    <div class="flex h-[500px]">
+                        <div class="w-64 bg-[#2f3136] p-3 space-y-2 overflow-y-auto">
+                            <p class="text-xs font-bold text-gray-400 uppercase">文字頻道</p>
+                            <div class="space-y-1">
+                                <div class="relative bg-gray-700/50 p-2 rounded text-white text-sm font-semibold flex items-center">
+                                    <span class="absolute left-[-8px] w-1 h-2 bg-white rounded-r-full"></span>
+                                    # nuke-by-lightningnuke-a5b
+                                    <span id="notification-ping" class="ml-auto w-2.5 h-2.5 bg-red-500 rounded-full hidden"></span>
+                                </div>
+                                <div class="p-2 rounded text-gray-400 text-sm"># nuke-by-lightningnuke-c8x</div>
+                                <div class="p-2 rounded text-gray-400 text-sm"># nuke-by-lightningnuke-f2p</div>
+                                <div class="p-2 rounded text-gray-400 text-sm"># nuke-by-lightningnuke-q9z</div>
+                                <div class="p-2 rounded text-gray-400 text-sm">... (還有 46 個)</div>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-[#36393f] p-4 flex flex-col relative">
+                           <div id="message-container" class="flex-1 space-y-4 overflow-y-auto pr-2">
+                               <!-- Messages will be injected here by JavaScript -->
+                           </div>
+                           <div id="new-messages-bar" class="absolute top-4 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg opacity-0 transition-opacity duration-300">
+                               新訊息
+                           </div>
+                           <div class="mt-4 h-11 bg-[#40444b] rounded-lg flex items-center px-4 text-gray-400">
+                                <span id="typing-indicator" class="text-sm"></span>
+                           </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="usage">
-        <div class="container">
-            <h2>🌟 使用方法</h2>
-            <ul>
-                <li><strong>獲取密鑰：</strong> 使用 <code>/key</code> 獲取授權密鑰，啟動 Xenuke 3.0 的全部功能。</li>
-                <li><strong>執行炸群：</strong> 使用 <code>/nuke</code> 或 <code>/nuke_pro</code> 指定伺服器 ID 和密鑰，啟動摧毀模式。</li>
-                <li><strong>監控性能：</strong> 使用 <code>/monitor</code> 查看 CPU、記憶體、網路流量與指令執行時間。</li>
-                <li><strong>備份與還原：</strong> 使用 <code>/backup</code> 儲存伺服器數據，<code>/restore</code> 快速還原。</li>
-                <li><strong>自訂操作：</strong> 使用 <code>/nuke_pro</code> 自訂訊息、伺服器名稱與頭像，實現個性化摧毀。</li>
-            </ul>
-        </div>
-    </section>
-
-    <section class="warning">
-        <div class="container">
-            <h2>📛 警告</h2>
-            <p>
-                Xenuke Nuke Bot 3.0 是一款極具破壞力的工具，僅限於學術研究與授權測試環境。未經許可使用可能違反 Discord 使用條款，導致帳號封禁。開發者 <strong>lighting_moon</strong> 對任何濫用行為的後果概不負責。請謹慎操作，尊重數位倫理與法規。
-            </p>
-        </div>
-    </section>
-
-    <section class="links">
-        <div class="container">
-            <h2>🔗 相關連結</h2>
-            <div class="link-buttons">
-                <a href="https://discord.gg/WMXfrj6EsU" aria-label="加入 Discord 社群">Discord 社群</a>
-                <a href="https://youtu.be/Pjec4Bx6FJM" aria-label="觀看 YouTube 教學影片">YouTube 教學</a>
+        <!-- Technology Stack Section -->
+        <section id="tech" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal"><h3 class="text-4xl md:text-5xl font-black section-title">閃電般的核心</h3><p class="mt-4 max-w-2xl mx-auto text-gray-400">採用尖端非同步技術，為極致效能而生。</p></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <!-- Tech Cards -->
+                    <div class="card p-8 rounded-2xl reveal text-center"><div class="mx-auto bg-gray-800/50 w-20 h-20 rounded-xl flex items-center justify-center mb-6"><img src="https://img.icons8.com/color/96/python.png" alt="Python Logo" class="w-12 h-12"/></div><h4 class="text-2xl font-bold mb-2">Discord.py</h4><p class="text-gray-400">強大而靈活的 Python 框架，作為與 Discord API 溝通的穩固基礎。</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 100ms;"><div class="mx-auto bg-gray-800/50 w-20 h-20 rounded-xl flex items-center justify-center mb-6"><svg class="w-10 h-10 text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9999 1.5C6.2142 1.5 1.5 6.2142 1.5 11.9999C1.5 17.7856 6.2142 22.4999 11.9999 22.4999C17.7856 22.4999 22.4999 17.7856 22.4999 11.9999C22.4999 6.2142 17.7856 1.5 11.9999 1.5ZM16.8535 11.3963L13.8535 8.39632C13.4392 7.98204 12.7687 7.98204 12.3544 8.39632C11.9401 8.8106 11.9401 9.48113 12.3544 9.89541L13.9589 11.4999H8C7.44771 11.4999 7 11.9476 7 12.4999C7 13.0522 7.44771 13.4999 8 13.4999H13.9589L12.3544 15.1044C11.9401 15.5187 11.9401 16.1892 12.3544 16.6035C12.7687 17.0178 13.4392 17.0178 13.8535 16.6035L16.8535 13.6035C17.2678 13.1892 17.2678 12.5187 16.8535 12.1044V11.3963Z"></path></svg></div><h4 class="text-2xl font-bold mb-2">Asyncio</h4><p class="text-gray-400">利用 Python 的非同步 I/O 核心，實現真正的高併發處理，讓所有任務同步執行，杜絕延遲。</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 200ms;"><div class="mx-auto bg-gray-800/50 w-20 h-20 rounded-xl flex items-center justify-center mb-6"><svg class="w-10 h-10 text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.9941 7.41416L12 15.4083L4.00586 7.41416L5.42008 6L12 12.5799L18.5799 6L19.9941 7.41416Z"></path></svg></div><h4 class="text-2xl font-bold mb-2">Aiohttp</h4><p class="text-gray-400">直接操作 HTTP 請求，繞過高階封裝，以最原始、最快速的方式向 Discord API 發動猛攻。</p></div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer>
-        <div class="container">
-            <p>💥 Xenuke Nuke Bot 3.0 — 終極毀滅與掌控，由您釋放！</p>
-            <p>Developed by lighting_moon | © 2025 All Rights Reserved</p>
+        <!-- How to Use Section -->
+        <section id="usage" class="py-20 sm:py-32 bg-black/10">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center reveal"><h3 class="text-4xl md:text-5xl font-black section-title">一鍵啟動</h3><p class="mt-4 text-lg text-gray-400">將機器人邀請至目標伺服器，給予管理員權限，然後在任何文字頻道中輸入指令。</p></div>
+                <div class="mt-12 max-w-2xl mx-auto code-block rounded-2xl p-6 reveal">
+                    <div class="flex items-center justify-between mb-4"><span class="text-gray-400">指令</span><div class="flex items-center gap-2"><span class="w-3 h-3 bg-red-500 rounded-full"></span><span class="w-3 h-3 bg-yellow-500 rounded-full"></span><span class="w-3 h-3 bg-green-500 rounded-full"></span></div></div>
+                    <pre><code class="language-bash text-lg text-white font-mono">> !nuke</code></pre>
+                    <p class="mt-4 text-gray-400">執行後，機器人將自動完成所有破壞任務，並在結束後退出伺服器。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Breakdown Section -->
+        <section id="process" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">毀滅的交響曲</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">見證 `!nuke` 指令執行的每一步，一場精心編排的混亂芭蕾。</p>
+                </div>
+                <div class="max-w-2xl mx-auto">
+                    <div class="relative">
+                        <!-- Timeline Item 1 -->
+                        <div class="timeline-item relative pl-16 pb-10 reveal">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full feature-icon flex items-center justify-center font-bold text-lg">1</div>
+                            <h4 class="text-2xl font-bold mb-1">啟動</h4>
+                            <p class="text-gray-400">接收到 `!nuke` 指令。系統檢查與權限驗證立即開始。冷卻計時器重置。</p>
+                        </div>
+                        <!-- Timeline Item 2 -->
+                        <div class="timeline-item relative pl-16 pb-10 reveal">
+                             <div class="absolute left-0 top-0 w-10 h-10 rounded-full feature-icon flex items-center justify-center font-bold text-lg">2</div>
+                            <h4 class="text-2xl font-bold mb-1">湮滅</h4>
+                            <p class="text-gray-400">並行任務啟動。所有頻道、身份組、與 Webhook 在數秒內被同時刪除。</p>
+                        </div>
+                        <!-- Timeline Item 3 -->
+                        <div class="timeline-item relative pl-16 pb-10 reveal">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full feature-icon flex items-center justify-center font-bold text-lg">3</div>
+                            <h4 class="text-2xl font-bold mb-1">重建</h4>
+                            <p class="text-gray-400">伺服器被重塑。50 個新頻道與 50 個垃圾身份組被高速創建，伺服器名稱與頭像同步變更。</p>
+                        </div>
+                         <!-- Timeline Item 4 -->
+                        <div class="timeline-item relative pl-16 pb-10 reveal">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full feature-icon flex items-center justify-center font-bold text-lg">4</div>
+                            <h4 class="text-2xl font-bold mb-1">宣傳</h4>
+                            <p class="text-gray-400">混亂散播。在所有新頻道中循環發送 @everyone 訊息，同時對所有成員發動 DM 轟炸。</p>
+                        </div>
+                         <!-- Timeline Item 5 -->
+                        <div class="timeline-item relative pl-16 pb-10 reveal">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full feature-icon flex items-center justify-center font-bold text-lg">5</div>
+                            <h4 class="text-2xl font-bold mb-1">肅清</h4>
+                            <p class="text-gray-400">最後的淨化。所有成員（除了機器人自身）被一一停權，社群被徹底清空。</p>
+                        </div>
+                         <!-- Timeline Item 6 -->
+                        <div class="timeline-item relative pl-16 reveal">
+                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full feature-icon flex items-center justify-center font-bold text-lg">6</div>
+                            <h4 class="text-2xl font-bold mb-1">消失</h4>
+                            <p class="text-gray-400">任務完成。機器人自動退出伺服器，不留下一絲痕跡，只留下毀滅後的寂靜。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="py-20 sm:py-32 bg-black/10">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">來自深淵的迴響</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">那些曾揮舞過這股力量的人留下的話語。</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- Testimonial 1 -->
+                    <div class="card p-8 rounded-2xl reveal">
+                        <p class="text-gray-300 text-lg mb-6">"這不是工具，這是一種聲明。速度快得令人難以置信。在一瞬間，一切都消失了。純粹而徹底。"</p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-xl">V</div>
+                            <div class="ml-4">
+                                <p class="font-bold text-white">VoidWalker</p>
+                                <p class="text-sm text-gray-400">混沌信徒</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Testimonial 2 -->
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 150ms;">
+                        <p class="text-gray-300 text-lg mb-6">"我見過很多 nuke 機器人，但沒有一個像 LightningNuke 這樣乾淨俐落。它的效率簡直就是一門藝術。沒有多餘的操作，只有純粹的執行力。"</p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center font-bold text-xl">N</div>
+                            <div class="ml-4">
+                                <p class="font-bold text-white">Nyx</p>
+                                <p class="text-sm text-gray-400">暗夜觀察者</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Testimonial 3 -->
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 300ms;">
+                        <p class="text-gray-300 text-lg mb-6">"它改變了我對 Discord 權限管理的看法。這是一個完美的壓力測試工具，揭示了任何伺服器架構的脆弱性。令人敬畏。"</p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center font-bold text-xl">731</div>
+                            <div class="ml-4">
+                                <p class="font-bold text-white">Unit_731</p>
+                                <p class="text-sm text-gray-400">系統分析師</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center reveal mb-16"><h3 class="text-4xl md:text-5xl font-black section-title">常見問題</h3><p class="mt-4 text-lg text-gray-400">在你釋放力量之前，先了解你需要知道的一切。</p></div>
+                <div class="max-w-3xl mx-auto space-y-4" x-data="{ open: null }">
+                    <!-- FAQ Items -->
+                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 1 ? null : 1" class="faq-question w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>我需要賦予機器人什麼權限？</span><svg class="faq-arrow w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 1 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div class="faq-answer" x-show="open === 1" x-transition><p class="p-6 pt-0 text-gray-400">為了完全發揮其毀滅性潛力，LightningNuke 需要「管理員」權限。這將授予它執行所有破壞性操作所需的一切能力，包括管理頻道、成員、身份組和伺服器設定。</p></div></div>
+                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 2 ? null : 2" class="faq-question w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>使用這個機器人安全嗎？</span><svg class="faq-arrow w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 2 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div class="faq-answer" x-show="open === 2" x-transition><p class="p-6 pt-0 text-gray-400">「安全」是一個相對的詞。此工具極其強大，其使用違反了 Discord 的服務條款。我們不對任何後果負責，包括您的帳戶或伺服器被封禁。本專案僅為技術展示和教育研究目的而存在。請自行承擔風險。</p></div></div>
+                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 3 ? null : 3" class="faq-question w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>為什麼要創建這麼一個工具？</span><svg class="faq-arrow w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 3 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div class="faq-answer" x-show="open === 3" x-transition><p class="p-6 pt-0 text-gray-400">創造是為了理解。LightningNuke 的誕生是為了探索非同步程式設計的極限，並作為一個案例研究，展示 Discord API 在壓力下的反應。它是一個關於力量、效率和潛在漏洞的教學工具。</p></div></div>
+                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 4 ? null : 4" class="faq-question w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>任務結束後會發生什麼？</span><svg class="faq-arrow w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 4 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div class="faq-answer" x-show="open === 4" x-transition><p class="p-6 pt-0 text-gray-400">如同幽靈一般，它來去無蹤。在完成所有指定的破壞任務後，機器人將自動從伺服器中退出，不留下任何直接的蹤跡。混亂是它留下的唯一證明。</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Warning Section -->
+        <section id="warning" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto card border-l-4 border-red-500 rounded-2xl p-8 reveal">
+                    <div class="flex items-center"><svg class="w-12 h-12 text-red-500 mr-6 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        <div>
+                            <h3 class="text-3xl font-black text-white">嚴正警告：力量的代價</h3>
+                            <p class="mt-2 text-gray-300">LightningNuke 是一個為教育和研究目的而創建的強大工具。它的使用可能違反 Discord 的服務條款，並可能導致您的帳戶和/或目標伺服器被永久封禁。開發者對任何濫用行為及其後果不承擔任何責任。請負責任地使用，並自行承擔所有風險。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Call to Action Section -->
+        <section class="pb-20 sm:pb-32">
+            <div class="container mx-auto px-6 text-center reveal">
+                 <h3 class="text-4xl md:text-5xl font-black text-glow">準備好見證真正的力量了嗎？</h3>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-300">加入我們的 Discord 社群，獲取機器人並成為混亂的一部分。下一個你聽到的聲音，將是毀滅的鐘聲。</p>
+                <div class="mt-8"><a href="https://discord.gg/kqy7k2cgsq" target="_blank" class="inline-block px-10 py-5 text-xl font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">地獄見</a></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-8">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p>&copy; 2025 LightningNuke. 僅供教育與研究目的使用。</p>
         </div>
     </footer>
-
+    
+    <script src="//unpkg.com/alpinejs" defer></script>
     <script>
-        // Advanced Particle Background
-        const particlesContainer = document.getElementById('particles');
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.style.width = `${Math.random() * 6 + 3}px`;
-            particle.style.height = particle.style.width;
-            particle.style.left = `${Math.random() * 100}vw`;
-            particle.style.top = `${Math.random() * 100}vh`;
-            particle.style.animationDuration = `${Math.random() * 4 + 4}s`;
-            particlesContainer.appendChild(particle);
-            setTimeout(() => particle.remove(), 8000);
-        }
-        setInterval(createParticle, 150);
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Scroll Reveal Animation ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                revealElements.forEach(el => {
+                    const elementTop = el.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - 100) {
+                        el.classList.add('visible');
+                    }
+                });
+            };
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll();
 
-        // Intersection Observer for section fade-in
-        const sections = document.querySelectorAll('section');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
+            // --- Discord Showcase Simulation ---
+            const showcaseSection = document.getElementById('showcase');
+            if (showcaseSection) {
+                const messageContainer = document.getElementById('message-container');
+                const notificationPing = document.getElementById('notification-ping');
+                const newMessagesBar = document.getElementById('new-messages-bar');
+                const typingIndicator = document.getElementById('typing-indicator');
+                let simulationInterval;
 
-        sections.forEach(section => observer.observe(section));
+                const messages = [
+                    { type: 'embed' }, { type: 'text' }, { type: 'text' }, 
+                    { type: 'bar' }, { type: 'text' }, { type: 'text' }, 
+                    { type: 'embed' }, { type: 'text' }
+                ];
+
+                let messageIndex = 0;
+                let startTime = new Date();
+                startTime.setHours(4, 3, 0, 0);
+
+                const createMessageHTML = (type, time) => {
+                    const timeString = `今天 ${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}:${time.getSeconds().toString().padStart(2, '0')} AM`;
+                    
+                    if (type === 'embed') {
+                        return `
+                        <div class="flex items-start space-x-3 message-appear">
+                            <img src="https://i.pinimg.com/736x/4d/1b/47/4d1b4727ae6fff4be96676918c9815f1.jpg" class="w-10 h-10 rounded-full flex-shrink-0" alt="Bot Avatar">
+                            <div>
+                                <p class="font-semibold text-indigo-400">LightningNuke <span class="text-xs text-gray-400 font-normal ml-1">${timeString}</span></p>
+                                <p class="text-white"><span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@everyone</span> <span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@here</span></p>
+                                <div class="mt-2 p-3 bg-[#2f3136] border-l-4 border-red-500 rounded">
+                                    <p class="font-bold text-white">混沌降臨</p>
+                                    <p class="text-sm text-gray-300 whitespace-pre-wrap">Где... где же этот сладкий хаос? 💥\nЭто — рассвет вашей агонии. 💀\nДо встречи в аду. discord.gg/lightningnuke</p>
+                                    <div class="mt-2 w-full h-32 bg-black rounded flex items-center justify-center text-gray-400 font-bold">[影片預覽加載中...]</div>
+                                </div>
+                            </div>
+                        </div>`;
+                    }
+                    if (type === 'text') {
+                         return `
+                         <div class="flex items-start space-x-3 message-appear">
+                            <img src="https://i.pinimg.com/736x/4d/1b/47/4d1b4727ae6fff4be96676918c9815f1.jpg" class="w-10 h-10 rounded-full flex-shrink-0" alt="Bot Avatar">
+                            <div>
+                                <p class="font-semibold text-indigo-400">LightningNuke <span class="text-xs text-gray-400 font-normal ml-1">${timeString}</span></p>
+                                <p class="text-white"><span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@everyone</span> <span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@here</span> Ты правда думал, что всё закончено?</p>
+                            </div>
+                        </div>`;
+                    }
+                    return '';
+                };
+                
+                const addMessage = () => {
+                    if (messageIndex >= messages.length) {
+                        typingIndicator.textContent = 'LightningNuke 已完成任務。';
+                        clearInterval(simulationInterval);
+                        return;
+                    }
+
+                    const messageData = messages[messageIndex];
+                    
+                    if (messageData.type === 'bar') {
+                        newMessagesBar.style.opacity = '1';
+                    } else {
+                        startTime.setSeconds(startTime.getSeconds() + Math.floor(Math.random() * 2));
+                        const newMessage = document.createElement('div');
+                        newMessage.innerHTML = createMessageHTML(messageData.type, startTime);
+                        messageContainer.appendChild(newMessage);
+                        messageContainer.scrollTop = messageContainer.scrollHeight;
+                        
+                        if (newMessagesBar.style.opacity === '1') {
+                            setTimeout(() => newMessagesBar.style.opacity = '0', 2000);
+                        }
+                    }
+
+                    messageIndex++;
+                };
+
+                const startSimulation = () => {
+                    if (simulationInterval) clearInterval(simulationInterval);
+                    messageContainer.innerHTML = '';
+                    messageIndex = 0;
+                    startTime.setHours(4, 3, 0, 0);
+                    notificationPing.classList.remove('hidden');
+                    typingIndicator.textContent = 'LightningNuke 正在輸入...';
+
+                    simulationInterval = setInterval(addMessage, 800);
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            startSimulation();
+                            observer.unobserve(showcaseSection);
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                observer.observe(showcaseSection);
+            }
+        });
     </script>
+
 </body>
 </html>
+
