@@ -7,29 +7,73 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --glow-color-1: #4f46e5;
+            --glow-color-2: #a855f7;
+        }
+
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0a0a0a;
             color: #e5e5e5;
-            overflow: hidden; /* Hide scrollbar for this page */
+            overflow-x: hidden;
         }
+        
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0a0a0a; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease-out, visibility 0.8s ease-out; }
+        #preloader.loaded { opacity: 0; visibility: hidden; }
+        .loader { width: 60px; height: 60px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: var(--glow-color-2); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .hero-bg {
-            background-image: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 1)), url('https://placehold.co/1920x1080/000000/FFFFFF?text=RECONSTRUCTION');
-            background-size: cover;
-            background-position: center;
+            position: relative;
+            background-color: #0a0a0a; /* Fallback */
         }
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
         .text-glow {
-            text-shadow: 0 0 8px rgba(99, 102, 241, 0.6), 0 0 20px rgba(139, 92, 246, 0.4);
+            text-shadow: 0 0 8px var(--glow-color-1), 0 0 20px var(--glow-color-2);
         }
         .btn-primary {
-            background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+            background-image: linear-gradient(to right, var(--glow-color-1), var(--glow-color-2));
             animation: pulse-glow 2s infinite ease-in-out;
         }
         
+        .card {
+            background-color: rgba(23, 23, 23, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3), 0 0 30px rgba(168, 85, 247, 0.4);
+        }
+        
+        .feature-icon {
+            background-image: linear-gradient(to bottom right, var(--glow-color-1), var(--glow-color-2));
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
         /* Typing animation */
         .typing-effect {
             display: inline-block;
-            border-right: .15em solid #7c3aed;
+            border-right: .15em solid var(--glow-color-2);
             white-space: nowrap;
             overflow: hidden;
             vertical-align: bottom;
@@ -38,7 +82,7 @@
 
         @keyframes blink-caret {
             from, to { border-color: transparent }
-            50% { border-color: #7c3aed; }
+            50% { border-color: var(--glow-color-2); }
         }
         
         /* Button pulse animation */
@@ -54,9 +98,32 @@
             background: rgba(17, 17, 17, 0.5);
             backdrop-filter: blur(5px);
         }
+        .countdown-box span:first-child {
+             animation: glitch-anim 3s infinite steps(2, end);
+        }
+        @keyframes glitch-anim {
+            0% { text-shadow: -2px -2px 0 var(--glow-color-1), 2px 2px 0 var(--glow-color-2); opacity: 0.8; }
+            2% { text-shadow: 2px 2px 0 var(--glow-color-1), -2px -2px 0 var(--glow-color-2); opacity: 1; }
+            4% { text-shadow: none; opacity: 1; }
+            100% { text-shadow: none; opacity: 1; }
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes gradient-flow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: linear-gradient(90deg, var(--glow-color-1), var(--glow-color-2), var(--glow-color-1)); background-size: 200% 200%; margin: 1rem auto 0; border-radius: 2px; animation: gradient-flow 4s ease infinite; }
     </style>
 </head>
 <body class="antialiased">
+    
+    <div id="preloader"><div class="loader"></div></div>
 
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
@@ -73,7 +140,8 @@
     <main>
         <!-- Hero Section -->
         <section class="hero-bg min-h-screen flex items-center justify-center">
-            <div class="text-center px-6 max-w-4xl mx-auto">
+            <canvas id="particle-canvas"></canvas>
+            <div class="content-wrapper text-center px-6 max-w-4xl mx-auto">
                 <div class="w-20 h-20 mx-auto mb-6 text-indigo-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full animate-spin" style="animation-duration: 3s;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.438.995s.145.755.438.995l1.003.827c.48.398.668 1.03.26 1.431l-1.296 2.247a1.125 1.125 0 0 1-1.37.49l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.063-.374-.313-.686-.645-.87a6.52 6.52 0 0 1-.22-.127c-.324-.196-.72-.257-1.075-.124l-1.217.456a1.125 1.125 0 0 1-1.37-.49l-1.296-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.437-.995s-.145-.755-.437-.995l-1.004-.827a1.125 1.125 0 0 1-.26-1.431l1.296-2.247a1.125 1.125 0 0 1 1.37-.49l1.217.456c.355.133.75.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
@@ -83,24 +151,11 @@
                 <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-glow typing-effect"></h2>
                 <p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-gray-300">我們的網站正在進行一次徹底的重構與升級，以帶來更強大、更震撼的體驗。請期待一場全新的混亂風暴。</p>
                 
-                <!-- Countdown Timer -->
                 <div id="countdown" class="mt-12 grid grid-cols-4 gap-4 max-w-2xl mx-auto">
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10">
-                        <span id="days" class="text-4xl md:text-6xl font-black text-glow">00</span>
-                        <span class="mt-2 block text-sm md:text-base text-gray-400">天</span>
-                    </div>
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10">
-                        <span id="hours" class="text-4xl md:text-6xl font-black text-glow">00</span>
-                        <span class="mt-2 block text-sm md:text-base text-gray-400">小時</span>
-                    </div>
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10">
-                        <span id="minutes" class="text-4xl md:text-6xl font-black text-glow">00</span>
-                        <span class="mt-2 block text-sm md:text-base text-gray-400">分鐘</span>
-                    </div>
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10">
-                        <span id="seconds" class="text-4xl md:text-6xl font-black text-glow">00</span>
-                        <span class="mt-2 block text-sm md:text-base text-gray-400">秒</span>
-                    </div>
+                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="days" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">天</span></div>
+                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="hours" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">小時</span></div>
+                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="minutes" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">分鐘</span></div>
+                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="seconds" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">秒</span></div>
                 </div>
 
                 <div class="mt-12">
@@ -108,10 +163,26 @@
                 </div>
             </div>
         </section>
+        
+        <!-- Sneak Peek Section -->
+        <section class="py-20 sm:py-32 bg-black/20">
+             <div class="container mx-auto px-6 content-wrapper">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">先睹為快</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">V2 版本即將迎來的功能碎片...</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card p-8 rounded-2xl reveal text-center"><div class="feature-icon w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg></div><h4 class="text-2xl font-bold mb-2">指令模組化</h4><p class="text-gray-400">引入更靈活的指令系統，允許選擇性執行破壞模組。</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 150ms;"><div class="feature-icon w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg></div><h4 class="text-2xl font-bold mb-2">效能再進化</h4><p class="text-gray-400">重構核心引擎，利用更底層的 API 操作，將執行速度推向物理極限。</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 300ms;"><div class="feature-icon w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg></div><h4 class="text-2xl font-bold mb-2">Web 儀表板</h4><p class="text-gray-400">一個全新的網頁控制台，用於實時監控與遠程觸發任務。</p></div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Footer -->
-    <footer class="fixed bottom-0 left-0 right-0 border-t border-white/10 py-6 bg-[#0a0a0a]/50">
+    <footer class="relative z-10 border-t border-white/10 py-6 bg-[#0a0a0a]/50">
         <div class="container mx-auto px-6 text-center text-gray-500">
             <p>&copy; 2025 LightningNuke. 僅供教育與研究目的使用。</p>
         </div>
@@ -119,20 +190,100 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            const preloader = document.getElementById('preloader');
+            window.addEventListener('load', () => {
+                preloader.classList.add('loaded');
+            });
+            
+            // --- Particle Background ---
+            const canvas = document.getElementById('particle-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                let mouse = { x: null, y: null, radius: 100 };
+                
+                window.addEventListener('mousemove', (event) => {
+                    mouse.x = event.x;
+                    mouse.y = event.y;
+                });
+                
+                const resizeCanvas = () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = document.querySelector('.hero-bg').offsetHeight;
+                };
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+                
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 1;
+                        this.baseX = this.x;
+                        this.baseY = this.y;
+                        this.density = (Math.random() * 30) + 1;
+                        this.color = `rgba(168, 85, 247, ${Math.random() * 0.5 + 0.2})`;
+                    }
+                    update() {
+                        let dx = mouse.x - this.x;
+                        let dy = mouse.y - this.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        let forceDirectionX = dx / distance;
+                        let forceDirectionY = dy / distance;
+                        let maxDistance = mouse.radius;
+                        let force = (maxDistance - distance) / maxDistance;
+                        let directionX = (forceDirectionX * force * this.density);
+                        let directionY = (forceDirectionY * force * this.density);
+
+                        if (distance < mouse.radius) {
+                            this.x -= directionX;
+                            this.y -= directionY;
+                        } else {
+                            if (this.x !== this.baseX) {
+                                let dx = this.x - this.baseX;
+                                this.x -= dx/10;
+                            }
+                            if (this.y !== this.baseY) {
+                                let dy = this.y - this.baseY;
+                                this.y -= dy/10;
+                            }
+                        }
+                    }
+                    draw() {
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+                
+                const initParticles = () => {
+                    particles = [];
+                    let numberOfParticles = (canvas.height * canvas.width) / 9000;
+                    for (let i = 0; i < numberOfParticles; i++) {
+                        particles.push(new Particle());
+                    }
+                };
+                initParticles();
+
+                const animateParticles = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+                    }
+                    requestAnimationFrame(animateParticles);
+                };
+                animateParticles();
+            }
+
             // --- Typing Effect ---
             const typingElement = document.querySelector('.typing-effect');
             if(typingElement) {
-                const phrases = [
-                    "正在升級...",
-                    "混沌重構中...",
-                    "敬請期待...",
-                    "A NEW ERA IS COMING"
-                ];
-                let phraseIndex = 0;
-                let charIndex = 0;
-                let isDeleting = false;
-                let timeoutId;
-
+                const phrases = ["正在升級...", "混沌重構中...", "敬請期待...", "A NEW ERA IS COMING"];
+                let phraseIndex = 0, charIndex = 0, isDeleting = false, timeoutId;
                 function type() {
                     clearTimeout(timeoutId);
                     const currentPhrase = phrases[phraseIndex];
@@ -148,14 +299,10 @@
                     }
 
                     if (!isDeleting && charIndex === currentPhrase.length) {
-                        typeSpeed = 2000;
-                        isDeleting = true;
+                        typeSpeed = 2000; isDeleting = true;
                     } else if (isDeleting && charIndex === 0) {
-                        isDeleting = false;
-                        phraseIndex = (phraseIndex + 1) % phrases.length;
-                        typeSpeed = 500;
+                        isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; typeSpeed = 500;
                     }
-
                     timeoutId = setTimeout(type, typeSpeed);
                 }
                 type();
@@ -164,40 +311,39 @@
             // --- Countdown Timer ---
             const countdownElement = document.getElementById('countdown');
             if (countdownElement) {
-                // 將目標日期設定為 2025 年 11 月 1 日
                 const targetDate = new Date("Nov 1, 2025 00:00:00").getTime();
-
-                const daysEl = document.getElementById('days');
-                const hoursEl = document.getElementById('hours');
-                const minutesEl = document.getElementById('minutes');
-                const secondsEl = document.getElementById('seconds');
-
+                const [daysEl, hoursEl, minutesEl, secondsEl] = [document.getElementById('days'), document.getElementById('hours'), document.getElementById('minutes'), document.getElementById('seconds')];
+                
                 const updateCountdown = () => {
-                    const now = new Date().getTime();
-                    const distance = targetDate - now;
-
+                    const distance = targetDate - new Date().getTime();
                     if (distance < 0) {
                         countdownElement.innerHTML = `<div class="col-span-4 text-4xl font-black text-glow">已上線！</div>`;
-                        clearInterval(interval);
-                        return;
+                        clearInterval(interval); return;
                     }
-
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                    daysEl.innerText = days.toString().padStart(2, '0');
-                    hoursEl.innerText = hours.toString().padStart(2, '0');
-                    minutesEl.innerText = minutes.toString().padStart(2, '0');
-                    secondsEl.innerText = seconds.toString().padStart(2, '0');
+                    daysEl.innerText = Math.floor(distance / 86400000).toString().padStart(2, '0');
+                    hoursEl.innerText = Math.floor((distance % 86400000) / 3600000).toString().padStart(2, '0');
+                    minutesEl.innerText = Math.floor((distance % 3600000) / 60000).toString().padStart(2, '0');
+                    secondsEl.innerText = Math.floor((distance % 60000) / 1000).toString().padStart(2, '0');
                 };
-
                 const interval = setInterval(updateCountdown, 1000);
                 updateCountdown();
             }
+            
+            // --- Scroll Reveal ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                revealElements.forEach(el => {
+                    if (el.getBoundingClientRect().top < windowHeight - 100) {
+                        el.classList.add('visible');
+                    }
+                });
+            };
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll(); // Trigger once on load
         });
     </script>
 
 </body>
 </html>
+
