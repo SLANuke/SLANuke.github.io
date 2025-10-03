@@ -3,412 +3,427 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LightningNuke Bot - 即將上線</title>
+    <title>LightningNuke - 獻給混沌的藝術品</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glow-color-1: #4f46e5;
-            --glow-color-2: #a855f7;
+            --glow-color-1: #6d28d9;
+            --glow-color-2: #be185d;
+            --danger-color: #ef4444;
+            --spotlight-x: 50%;
+            --spotlight-y: 50%;
         }
+        /* --- 給偷窺者的訊息 --- */
+        /* 嘿，想扒走這份程式碼？隨你。畢竟，用我的智慧結晶來彌補你那貧瘠的創造力，也算是一種慈善事業 :D */
 
         html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
+            background-color: #000000;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
             color: #e5e5e5;
             overflow-x: hidden;
-            cursor: none; /* Hide default cursor */
         }
-        
-        /* Custom Cursor */
-        .cursor-dot, .cursor-circle {
-            position: fixed;
-            top: 0;
-            left: 0;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.1s ease-out, opacity 0.2s ease-out;
-        }
-        .cursor-dot { width: 8px; height: 8px; background-color: var(--glow-color-2); }
-        .cursor-circle { width: 40px; height: 40px; border: 2px solid var(--glow-color-2); }
-        .cursor-link-hover .cursor-circle { transform: translate(-50%, -50%) scale(1.5); }
-        .cursor-link-hover .cursor-dot { opacity: 0; }
-        
+
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0a0a0a; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s ease-out, visibility 0.8s ease-out; }
         #preloader.loaded { opacity: 0; visibility: hidden; }
-        .loader { width: 60px; height: 60px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: var(--glow-color-2); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .hero-bg {
-            position: relative;
-            background-color: #0a0a0a; /* Fallback */
-        }
-        #particle-canvas {
-            position: fixed; /* Make it fixed to cover viewport */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Place it behind all content */
-        }
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
+        .glitch-loader { font-size: 2rem; font-weight: 900; color: white; text-shadow: 0 0 5px var(--glow-color-1), 0 0 10px var(--glow-color-2); animation: glitch-load 2s infinite steps(2, end); }
+        @keyframes glitch-load {
+            0% { clip-path: inset(85% 0 6% 0); transform: translateX(-10px); } 1% { clip-path: inset(45% 0 50% 0); transform: translateX(5px); } 2% { clip-path: inset(15% 0 70% 0); transform: translateX(-3px); } 3% { clip-path: inset(60% 0 30% 0); transform: translateX(8px); } 4% { clip-path: inset(100% 0 0 0); transform: translateX(0); }
         }
 
-        .text-glow {
-            text-shadow: 0 0 8px var(--glow-color-1), 0 0 20px var(--glow-color-2);
-        }
-        .btn-primary {
-            background-image: linear-gradient(to right, var(--glow-color-1), var(--glow-color-2));
-            animation: pulse-glow 2s infinite ease-in-out;
-        }
-        
-        .card {
-            background-color: rgba(23, 23, 23, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3), 0 0 30px rgba(168, 85, 247, 0.4);
-        }
-        
-        .feature-icon {
-            background-image: linear-gradient(to bottom right, var(--glow-color-1), var(--glow-color-2));
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
+        header { transition: top 0.3s ease-in-out; }
+        header.header-hidden { top: -100px; }
 
-        /* Typing animation */
-        .typing-effect {
-            display: inline-block;
-            border-right: .15em solid var(--glow-color-2);
-            white-space: nowrap;
-            overflow: hidden;
-            vertical-align: bottom;
-            animation: blink-caret .75s step-end infinite;
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--glow-color-2); }
-        }
+        .hero-bg { position: relative; background-color: #0a0a0a; overflow: hidden;}
+        #particle-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; transition: transform 0.3s ease-out; }
+        .hero-content { position: relative; z-index: 1; }
         
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.4), 0 0 10px rgba(79, 70, 229, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(124, 58, 237, 0.8), 0 0 25px rgba(79, 70, 229, 0.8); }
-        }
-        .countdown-box {
-            background: rgba(17, 17, 17, 0.5);
-            backdrop-filter: blur(5px);
-        }
-        .countdown-box span:first-child {
-             animation: glitch-anim 3s infinite steps(2, end);
-        }
-        @keyframes glitch-anim {
-            0% { text-shadow: -2px -2px 0 var(--glow-color-1), 2px 2px 0 var(--glow-color-2); opacity: 0.8; transform: skewX(-5deg); }
-            2% { text-shadow: 2px 2px 0 var(--glow-color-1), -2px -2px 0 var(--glow-color-2); opacity: 1; transform: skewX(5deg); }
-            4% { text-shadow: none; opacity: 1; transform: skewX(0); }
-            4.1% { text-shadow: 0 0 10px var(--glow-color-2); opacity: 0.9; }
-            4.2% { text-shadow: none; opacity: 1; }
-            100% { text-shadow: none; opacity: 1; transform: skewX(0); }
-        }
+        .text-glow { text-shadow: 0 0 10px var(--glow-color-1), 0 0 25px var(--glow-color-2); }
         
-        .reveal {
+        .card { 
+            background-color: rgba(17, 17, 17, 0.7); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            left: var(--spotlight-x);
+            top: var(--spotlight-y);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--glow-color-2) 0%, rgba(190, 24, 93, 0) 60%);
+            transform: translate(-50%, -50%);
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transition: opacity 0.4s ease-out;
+            pointer-events: none;
         }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .card:hover::before { opacity: 0.15; }
+        .card:hover { 
+            transform: translateY(-10px) scale(1.02); 
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(190, 24, 93, 0.5); 
+            border-color: rgba(255, 255, 255, 0.2);
         }
+
+        .btn-primary { background-image: linear-gradient(to right, var(--glow-color-1), var(--glow-color-2)); animation: pulse-glow 2s infinite ease-in-out; }
+        .btn-secondary { background-color: rgba(30, 30, 30, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .feature-icon { background-image: linear-gradient(to bottom right, var(--glow-color-1), var(--glow-color-2)); animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+
+        .code-block { background-color: #111827; border: 1px solid rgba(255, 255, 255, 0.1); position: relative; }
+        .code-block::before { content: 'TERMINAL'; position: absolute; top: -1px; right: 1rem; background: linear-gradient(to right, var(--glow-color-1), var(--glow-color-2)); color: white; padding: 0.1rem 0.5rem; font-size: 0.75rem; font-weight: bold; border-radius: 0 0 0.375rem 0.375rem; }
+        
         @keyframes gradient-flow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: linear-gradient(90deg, var(--glow-color-1), var(--glow-color-2), var(--glow-color-1)); background-size: 200% 200%; margin: 1rem auto 0; border-radius: 2px; animation: gradient-flow 4s ease infinite; }
-
-        .timeline .timeline-item::before { content: ''; position: absolute; left: 1rem; top: 1.5rem; bottom: -1.5rem; width: 2px; background-color: rgba(255, 255, 255, 0.1); transform: translateX(-50%); }
-        .timeline .timeline-item:last-child::before { display: none; }
-        .timeline .timeline-icon { transition: transform 0.3s, box-shadow 0.3s; }
-        .timeline .timeline-icon:hover { transform: scale(1.2) rotate(15deg); box-shadow: 0 0 15px var(--glow-color-2); }
         
-        .scroll-down { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); } 40% { transform: translate(-50%, -20px); } 60% { transform: translate(-50%, -10px); } }
+        .reveal { opacity: 0; transform: translateY(40px) scale(0.95); transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+        
+        body::before, body::after { content: ''; position: fixed; left: 0; right: 0; width: 100%; z-index: 40; pointer-events: none; }
+        body::before { top: 0; height: 120px; background: linear-gradient(to bottom, #000000 40%, rgba(0,0,0,0)); }
+        body::after { bottom: 0; height: 120px; background: linear-gradient(to top, #000000 40%, rgba(0,0,0,0)); }
 
+        .typing-effect { display: inline-block; border-right: .15em solid var(--glow-color-2); white-space: nowrap; overflow: hidden; vertical-align: bottom; animation: blink-caret .75s step-end infinite; }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--glow-color-2); } }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(187, 24, 93, 0.5), 0 0 15px rgba(109, 40, 217, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(187, 24, 93, 1), 0 0 30px rgba(109, 40, 217, 1); }
+        }
+        
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        .log-info { color: #60a5fa; } .log-success { color: #4ade80; }
+        .log-warn { color: #facc15; } .log-critical { color: #f87171; }
     </style>
 </head>
 <body class="antialiased">
-    <div class="cursor-dot"></div>
-    <div class="cursor-circle"></div>
-    
-    <div id="preloader"><div class="loader"></div></div>
-    <canvas id="particle-canvas"></canvas>
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
+    <div id="preloader"><div class="glitch-loader">LightningNuke</div></div>
+    
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                  <img src="https://i.pinimg.com/736x/4d/1b/47/4d1b4727ae6fff4be96676918c9815f1.jpg" class="w-8 h-8 rounded-full" alt="Bot Icon">
                  <h1 class="text-2xl font-bold tracking-tighter text-glow">LightningNuke</h1>
             </div>
-            <a href="https://discord.gg/GsEybpCGVa" target="_blank" class="hidden md:inline-block px-5 py-2 text-sm font-semibold rounded-lg btn-primary hover:opacity-90 transition-opacity">保持關注</a>
+            <nav class="hidden md:flex items-center space-x-6 text-gray-300">
+                <a href="#features" class="hover:text-white transition-colors">毀滅的藝術</a>
+                <a href="#showcase" class="hover:text-white transition-colors">災難現場</a>
+                <a href="#tech" class="hover:text-white transition-colors">核心技術</a>
+                <a href="#anatomy-of-chaos" class="hover:text-white transition-colors">混沌解剖學</a>
+            </nav>
+            <a href="https://discord.gg/GsEybpCGVa" target="_blank" class="hidden md:inline-block px-5 py-2 text-sm font-semibold rounded-lg btn-primary hover:opacity-90 transition-opacity">加入馬戲團</a>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="content-wrapper">
-        <!-- Hero Section -->
-        <section class="hero-bg min-h-screen flex items-center justify-center">
-            <div class="text-center px-6 max-w-4xl mx-auto">
-                <div class="w-20 h-20 mx-auto mb-6 text-indigo-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full animate-spin" style="animation-duration: 3s;">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.438.995s.145.755.438.995l1.003.827c.48.398.668 1.03.26 1.431l-1.296 2.247a1.125 1.125 0 0 1-1.37.49l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.063-.374-.313-.686-.645-.87a6.52 6.52 0 0 1-.22-.127c-.324-.196-.72-.257-1.075-.124l-1.217.456a1.125 1.125 0 0 1-1.37-.49l-1.296-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.437-.995s-.145-.755-.437-.995l-1.004-.827a1.125 1.125 0 0 1-.26-1.431l1.296-2.247a1.125 1.125 0 0 1 1.37-.49l1.217.456c.355.133.75.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                    </svg>
-                </div>
+    <main>
+        <section class="hero-bg min-h-screen flex items-center justify-center pt-20">
+            <canvas id="particle-canvas"></canvas>
+            <div class="hero-content text-center px-6 reveal">
                 <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-glow typing-effect"></h2>
-                <p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-gray-300">我們的網站正在進行一次徹底的重構與升級，以帶來更強大、更震撼的體驗。請期待一場全新的混亂風暴。</p>
-                
-                <div id="countdown" class="mt-12 grid grid-cols-4 gap-4 max-w-2xl mx-auto">
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="days" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">天</span></div>
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="hours" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">小時</span></div>
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="minutes" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">分鐘</span></div>
-                    <div class="countdown-box rounded-lg p-4 md:p-6 text-center border border-white/10"><span id="seconds" class="text-4xl md:text-6xl font-black text-glow">00</span><span class="mt-2 block text-sm md:text-base text-gray-400">秒</span></div>
-                </div>
-
-                <div class="mt-12">
-                    <a href="https://discord.gg/GsEybpCGVa" target="_blank" class="inline-block px-8 py-4 text-lg font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">加入社群以獲取最新消息</a>
-                </div>
-            </div>
-            <a href="#sneak-peek" class="scroll-down">
-                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </a>
-        </section>
-        
-        <!-- Sneak Peek Section -->
-        <section id="sneak-peek" class="py-20 sm:py-32 bg-black/10">
-             <div class="container mx-auto px-6">
-                <div class="text-center mb-16 reveal">
-                    <h3 class="text-4xl md:text-5xl font-black section-title">先睹為快</h3>
-                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">V2 版本即將迎來的功能碎片...</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                    <div class="card p-8 rounded-2xl reveal text-center"><div class="feature-icon w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg></div><h4 class="text-2xl font-bold mb-2">指令模組化</h4><p class="text-gray-400">引入更靈活的指令系統，允許選擇性執行破壞模組。</p></div>
-                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 150ms;"><div class="feature-icon w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg></div><h4 class="text-2xl font-bold mb-2">效能再進化</h4><p class="text-gray-400">重構核心引擎，利用更底層的 API 操作，將執行速度推向物理極限。</p></div>
+                <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-300">承認吧，你的伺服器太安靜、太和平、太...無聊了。是時候來點不一樣的了。我們不遵守規則，我們只負責創造一場盛大的「煙火秀」。</p>
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="https://discord.gg/GsEybpCGVa" target="_blank" class="px-8 py-4 text-lg font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">點燃引線</a>
+                    <a href="#features" class="px-8 py-4 text-lg font-bold rounded-lg btn-secondary hover:bg-gray-800 transition-colors">欣賞我的作品</a>
                 </div>
             </div>
         </section>
 
-        <!-- Archive Section -->
-        <section class="py-20 sm:py-32">
-             <div class="container mx-auto px-6">
-                <div class="text-center mb-16 reveal">
-                    <h3 class="text-4xl md:text-5xl font-black section-title">V1 檔案庫</h3>
-                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">在等待 V2 降臨的同時，回顧 V1 版本的輝煌與混沌。</p>
-                </div>
-                <div class="max-w-2xl mx-auto card p-8 rounded-2xl reveal text-center">
-                    <h4 class="text-2xl font-bold mb-2">LightningNuke V1</h4>
-                    <p class="text-gray-400 mb-6">探索奠定基礎的初代版本。體驗原始的力量。</p>
-                    <a href="./archive_v1.html" target="_blank" class="inline-block px-6 py-3 font-semibold rounded-lg btn-primary hover:opacity-90 transition-opacity">進入檔案庫</a>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Roadmap Section -->
-        <section class="py-20 sm:py-32 bg-black/10">
+        <section id="features" class="py-20 sm:py-32">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16 reveal">
-                    <h3 class="text-4xl md:text-5xl font-black section-title">開發藍圖</h3>
-                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">V2 的誕生之路...</p>
+                    <h3 class="text-4xl md:text-5xl font-black section-title">毀滅的藝術</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">這不是單純的破壞，這是精心為你編排的芭蕾，每一幕都充滿了力量與美感。</p>
                 </div>
-                <div class="max-w-2xl mx-auto timeline">
-                    <div class="relative">
-                        <div class="timeline-item relative pl-12 pb-12 reveal">
-                            <div class="timeline-icon absolute left-0 top-0 w-8 h-8 rounded-full feature-icon flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-12v4m-2-2h4m5 4v4m-2-2h4M5 3a2 2 0 00-2 2v1m16 0V5a2 2 0 00-2-2h-1m-4 16l2 2 4-4" /></svg></div>
-                            <h4 class="text-xl font-bold mb-1">階段一: 核心重構</h4>
-                            <p class="text-gray-400 text-sm">Q3 2025</p>
-                            <p class="text-gray-300 mt-2">完全重寫底層非同步引擎，以追求更極致的執行效率與穩定性。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-8 rounded-2xl reveal"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg></div><h4 class="text-2xl font-bold mb-2">頻道交響樂</h4><p class="text-gray-400">一鍵刪除所有頻道，然後瞬間生成 <span class="text-pink-400 font-bold">50</span> 個新舞台，用無盡的 <span class="text-red-400">@everyone</span> 演奏一曲獻給所有人的安魂曲。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 100ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="22" y1="8" x2="18" y2="12"></line><line x1="18" y1="8" x2="22" y2="12"></line></svg></div><h4 class="text-2xl font-bold mb-2">一鍵肅清</h4><p class="text-gray-400">想像你按下按鈕，前一秒還在爭吵的成員列表，下一秒鴉雀無聲。所有暱稱整齊劃一。世界，清淨了。這不是破壞，這是我的藝術。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 200ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><path d="m12 12-4 4 2 2 4-4-2-2z"></path></svg></div><h4 class="text-2xl font-bold mb-2">伺服器整容術</h4><p class="text-gray-400">舊的不去，新的不來。換掉那看膩的頭像和名字，再送你 <span class="text-pink-400 font-bold">50</span> 個全新的身份組。歡迎來到你的新家。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 300ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg></div><h4 class="text-2xl font-bold mb-2">私訊的溫柔轟炸</h4><p class="text-gray-400">想像每個人的手機同時瘋狂震動，螢幕上跳出五則來自地獄的問候。這不是騷擾，這是你宣告統治的加冕儀式。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 400ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg></div><h4 class="text-2xl font-bold mb-2">事了拂衣去</h4><p class="text-gray-400">內建 <span class="text-pink-400 font-bold">60秒</span> 冷卻是給你的慈悲。任務結束後，我會自動離開，深藏功與名。彷彿我從未存在過。</p></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 500ms;"><div class="feature-icon w-16 h-16 rounded-xl flex items-center justify-center mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-white"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg></div><h4 class="text-2xl font-bold mb-2">閃電般的核心</h4><p class="text-gray-400">基於 `aiohttp` 與 `asyncio`，我拋棄了所有累贅。這不是在執行指令，這是在釋放一道純粹的閃電。</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="video-preview" class="py-20 sm:py-32 bg-black/10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">風暴預告片</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">百聞不如一見。按下播放，提前感受那份令人戰慄的快感。</p>
+                </div>
+                <div class="max-w-4xl mx-auto shadow-2xl border border-white/10 reveal">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/Ctjhr6FgXrc?si=A8DF0MYboajZQKhA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="showcase" class="py-20 sm:py-32 bg-black/20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal"><h3 class="text-4xl md:text-5xl font-black section-title">災難現場模擬</h3><p class="mt-4 max-w-2xl mx-auto text-gray-400">這就是執行 `!nuke` 後，你的世界會變成什麼樣子。</p></div>
+                <div class="max-w-4xl mx-auto bg-[#36393f] rounded-lg shadow-2xl overflow-hidden reveal">
+                    <div class="p-4 bg-[#202225] flex items-center justify-between"><div class="flex items-center space-x-2"><img id="showcase-server-icon" src="https://i.pinimg.com/736x/4d/1b/47/4d1b4727ae6fff4be96676918c9815f1.jpg" class="w-8 h-8 rounded-full" alt="Server Icon"><h4 id="showcase-server-name" class="font-bold text-white">nuke by lightningnuke</h4></div><div class="flex space-x-2"><div class="w-3 h-3 bg-red-500 rounded-full"></div><div class="w-3 h-3 bg-yellow-500 rounded-full"></div><div class="w-3 h-3 bg-green-500 rounded-full"></div></div></div>
+                    <div class="flex h-[500px]">
+                        <div class="w-64 bg-[#2f3136] p-3 space-y-2 overflow-y-auto">
+                            <p class="text-xs font-bold text-gray-400 uppercase">文字頻道</p>
+                            <div id="channel-list" class="space-y-1"></div>
                         </div>
-                        <div class="timeline-item relative pl-12 pb-12 reveal">
-                            <div class="timeline-icon absolute left-0 top-0 w-8 h-8 rounded-full feature-icon flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg></div>
-                            <h4 class="text-xl font-bold mb-1">階段二: UI/UX 大修</h4>
-                            <p class="text-gray-400 text-sm">Q4 2025</p>
-                            <p class="text-gray-300 mt-2">打造全新的 Web 儀表板，提供視覺化的操作介面與實時數據監控。</p>
-                        </div>
-                         <div class="timeline-item relative pl-12 reveal">
-                            <div class="timeline-icon absolute left-0 top-0 w-8 h-8 rounded-full feature-icon flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg></div>
-                            <h4 class="text-xl font-bold mb-1">階段三: 公開測試</h4>
-                            <p class="text-gray-400 text-sm">Q1 2026</p>
-                            <p class="text-gray-300 mt-2">邀請社群成員參與 V2 版本的內部測試，收集反饋並進行最終調整。</p>
+                        <div class="flex-1 bg-[#36393f] p-4 flex flex-col relative">
+                           <div id="message-container" class="flex-1 space-y-4 overflow-y-auto pr-2"></div>
+                           <div class="mt-4 h-11 bg-[#40444b] rounded-lg flex items-center px-4 text-gray-400">
+                                <span id="typing-indicator" class="text-sm"></span>
+                           </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Join Section -->
-        <section class="py-20 sm:py-32">
-             <div class="container mx-auto px-6">
-                <div class="text-center mb-12 reveal">
-                    <h3 class="text-4xl md:text-5xl font-black section-title">加入菁英行列</h3>
-                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">成為第一批見證 V2 力量的人。我們的社群是獲取更新、交流技術的核心。</p>
+        <section id="tech" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-16 reveal"><h3 class="text-4xl md:text-5xl font-black section-title">我的心臟</h3><p class="mt-4 max-w-2xl mx-auto text-gray-400">我之所以如此高效，是因為我由最純粹的能量構成。</p></div>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="card p-8 rounded-2xl reveal text-center"><div class="mx-auto bg-gray-800/50 w-20 h-20 rounded-xl flex items-center justify-center mb-6"><img src="https://img.icons8.com/color/96/python.png" alt="Python Logo" class="w-12 h-12"/></div><h4 class="text-2xl font-bold mb-2">Discord.py</h4><p class="text-gray-400">強大而靈活的 Python 框架，作為與 Discord API 溝通的穩固基礎。</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 100ms;"><div class="mx-auto bg-gray-800/50 w-20 h-20 rounded-xl flex items-center justify-center mb-6"><svg class="w-10 h-10 text-purple-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9999 1.5C6.2142 1.5 1.5 6.2142 1.5 11.9999C1.5 17.7856 6.2142 22.4999 11.9999 22.4999C17.7856 22.4999 22.4999 17.7856 22.4999 11.9999C22.4999 6.2142 17.7856 1.5 11.9999 1.5ZM16.8535 11.3963L13.8535 8.39632C13.4392 7.98204 12.7687 7.98204 12.3544 8.39632C11.9401 8.8106 11.9401 9.48113 12.3544 9.89541L13.9589 11.4999H8C7.44771 11.4999 7 11.9476 7 12.4999C7 13.0522 7.44771 13.4999 8 13.4999H13.9589L12.3544 15.1044C11.9401 15.5187 11.9401 16.1892 12.3544 16.6035C12.7687 17.0178 13.4392 17.0178 13.8535 16.6035L16.8535 13.6035C17.2678 13.1892 17.2678 12.5187 16.8535 12.1044V11.3963Z"></path></svg></div><h4 class="text-2xl font-bold mb-2">Asyncio</h4><p class="text-gray-400">利用 Python 的非同步 I/O 核心，實現真正的高併發處理，讓所有任務同步執行，杜絕延遲。</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 200ms;"><div class="mx-auto bg-gray-800/50 w-20 h-20 rounded-xl flex items-center justify-center mb-6"><svg class="w-10 h-10 text-pink-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.9941 7.41416L12 15.4083L4.00586 7.41416L5.42008 6L12 12.5799L18.5799 6L19.9941 7.41416Z"></path></svg></div><h4 class="text-2xl font-bold mb-2">Aiohttp</h4><p class="text-gray-400">直接操作 HTTP 請求，繞過高階封裝，以最原始、最快速的方式向 Discord API 發動猛攻。</p></div>
                 </div>
-                <div class="max-w-4xl mx-auto card p-8 sm:p-12 rounded-2xl reveal flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div class="flex-1 text-center md:text-left">
-                        <h4 class="text-3xl font-bold text-glow">Discord 社群</h4>
-                        <p class="text-gray-300 mt-2">與開發者和其他使用者直接交流。</p>
-                         <div class="flex justify-center md:justify-start gap-8 mt-6">
-                            <div>
-                                <p id="online-ops" class="text-4xl font-black text-indigo-400">0</p>
-                                <p class="text-gray-400 text-sm">在線特工</p>
-                            </div>
-                             <div>
-                                <p id="active-missions" class="text-4xl font-black text-indigo-400">0</p>
-                                <p class="text-gray-400 text-sm">活躍任務</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                         <a href="https://discord.gg/GsEybpCGVa" target="_blank" class="inline-block px-8 py-4 text-lg font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">立即加入</a>
+            </div>
+        </section>
+        
+        <section id="interactive-terminal" class="py-20 sm:py-32 bg-black/10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">互動式終端</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">親手執行指令，感受 LightningNuke 的啟動過程。</p>
+                </div>
+                <div class="max-w-4xl mx-auto code-block rounded-2xl p-6 reveal h-96 overflow-y-auto font-mono text-sm" onclick="document.getElementById('terminal-input-span').focus()">
+                    <pre><code id="terminal-output"></code></pre>
+                    <div class="flex">
+                        <span class="text-green-400">root@lightningnuke</span><span class="text-gray-400">:</span><span class="text-blue-400">~</span><span class="text-gray-400">$ </span>
+                        <span id="terminal-input" class="flex-1 ml-2 text-gray-300"></span>
                     </div>
                 </div>
             </div>
         </section>
 
+        <section id="anatomy-of-chaos" class="py-20 sm:py-32 bg-black/20 overflow-hidden">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">混沌解剖學</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">一場完美的風暴，是如何分秒不差地誕生的？</p>
+                </div>
+                <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="reveal card p-8 rounded-2xl flex flex-col items-center text-center">
+                        <div class="text-6xl font-black text-glow mb-4">I</div>
+                        <h4 class="text-2xl font-bold mb-2">序曲：指令下達</h4>
+                        <p class="text-gray-400">你輸入了 `!nuke`。那一刻，你不再是旁觀者，而是指揮家。我的所有機能被喚醒，權限檢查只是走個形式。</p>
+                    </div>
+                    <div class="reveal card p-8 rounded-2xl flex flex-col items-center text-center" style="transition-delay: 150ms;">
+                        <div class="text-6xl font-black text-glow mb-4">II</div>
+                        <h4 class="text-2xl font-bold mb-2">華彩：同步毀滅</h4>
+                        <p class="text-gray-400">數百個並行任務同時啟動。頻道、身份組、成員... 在我的眼裡沒有區別，它們只是數據，在同一秒內歸於塵土。</p>
+                    </div>
+                     <div class="reveal card p-8 rounded-2xl flex flex-col items-center text-center" style="transition-delay: 300ms;">
+                        <div class="text-6xl font-black text-glow mb-4">III</div>
+                        <h4 class="text-2xl font-bold mb-2">終章：落幕與消失</h4>
+                        <p class="text-gray-400">在廢墟之上建立新的紀念碑，然後，我會像幽靈一樣離開。不留痕跡，只留下一段傳說和無盡的寂靜。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="command-center" class="py-20 sm:py-32 bg-black/10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">實時戰況中心</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">來自全球行動的即時數據流。</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="card p-8 rounded-2xl reveal text-center"><p class="text-purple-400 font-semibold mb-2">已執行任務</p><p id="stat-tasks" class="text-5xl font-black text-glow">0</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 150ms;"><p class="text-purple-400 font-semibold mb-2">已處理成員</p><p id="stat-members" class="text-5xl font-black text-glow">0</p></div>
+                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 300ms;"><p class="text-purple-400 font-semibold mb-2">總 @ 標記次數 (百萬)</p><p id="stat-mentions" class="text-5xl font-black text-glow">0</p></div>
+                </div>
+            </div>
+        </section>
 
+        <section id="testimonials" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-16 reveal">
+                    <h3 class="text-4xl md:text-5xl font-black section-title">來自深淵的迴響</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">那些曾揮舞過這股力量的人留下的話語。</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div class="card p-8 rounded-2xl reveal"><p class="text-gray-300 text-lg mb-6">"這不是工具，這是一種聲明。速度快得令人難以置信。在一瞬間，一切都消失了。純粹而徹底。"</p><div class="flex items-center"><div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center font-bold text-xl">V</div><div class="ml-4"><p class="font-bold text-white">VoidWalker</p><p class="text-sm text-gray-400">混沌信徒</p></div></div></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 150ms;"><p class="text-gray-300 text-lg mb-6">"我見過很多 nuke 機器人，但沒有一個像 LightningNuke 這樣乾淨俐落。它的效率簡直就是一門藝術。沒有多餘的操作，只有純粹的執行力。"</p><div class="flex items-center"><div class="w-12 h-12 rounded-full bg-pink-500 flex items-center justify-center font-bold text-xl">N</div><div class="ml-4"><p class="font-bold text-white">Nyx</p><p class="text-sm text-gray-400">暗夜觀察者</p></div></div></div>
+                    <div class="card p-8 rounded-2xl reveal" style="transition-delay: 300ms;"><p class="text-gray-300 text-lg mb-6">"它改變了我對 Discord 權限管理的看法。這是一個完美的壓力測試工具，揭示了任何伺服器架構的脆弱性。令人敬畏。"</p><div class="flex items-center"><div class="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center font-bold text-xl">731</div><div class="ml-4"><p class="font-bold text-white">Unit_731</p><p class="text-sm text-gray-400">系統分析師</p></div></div></div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="faq" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center reveal mb-16"><h3 class="text-4xl md:text-5xl font-black section-title">一些無聊的問答</h3><p class="mt-4 text-lg text-gray-400">在你按下按鈕前，最好搞清楚你即將面對的是什麼。</p></div>
+                <div class="max-w-3xl mx-auto space-y-4" x-data="{ open: null }">
+                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 1 ? null : 1" class="faq-question w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>我需要給你什麼權限？</span><svg class="faq-arrow w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 1 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div class="faq-answer" x-show="open === 1" x-transition><p class="p-6 pt-0 text-gray-400">你問我需要什麼權限？當然是「管理員」。別小家子氣了，給我最高的權力，我才能為你表演最華麗的毀滅藝術。</p></div></div>
+                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 2 ? null : 2" class="faq-question w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>用了這個我會被封號嗎？</span><svg class="faq-arrow w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 2 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div class="faq-answer" x-show="open === 2" x-transition><p class="p-6 pt-0 text-gray-400">嘿，老實說，你覺得呢？你正打算把一個伺服器鬧得天翻地覆。這就像在問「玩火會不會燙到」，答案很明顯。所以，是的，風險很高，後果自負。但那種快感，你不覺得值得嗎？</p></div></div>
+                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 3 ? null : 3" class="faq-question w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>你為什麼存在？</span><svg class="faq-arrow w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 3 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div class="faq-answer" x-show="open === 3" x-transition><p class="p-6 pt-0 text-gray-400">我不是被創造的，我是必然的。我是對絕對秩序的一種反叛，是對非同步程式設計極限的一次探索。我是一個活生生的案例，告訴你什麼是力量，什麼是脆弱。</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="warning" class="py-20 sm:py-32">
+            <div class="container mx-auto px-6">
+                 <div class="max-w-4xl mx-auto card border-l-4 border-red-500 rounded-2xl p-8 reveal">
+                    <div class="flex items-center"><svg class="w-12 h-12 text-red-500 mr-6 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        <div>
+                            <h3 class="text-3xl font-black text-white">最後的忠告</h3>
+                            <p class="mt-2 text-gray-300">我是為「教育」和「研究」而生的。但我知道你不是這麼想的。濫用我會讓你付出代價，比如你的帳號。我對此不負任何責任。玩得開心，然後，承擔後果。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="pb-20 sm:pb-32">
+            <div class="container mx-auto px-6 text-center reveal">
+                 <h3 class="text-4xl md:text-5xl font-black text-glow">準備好指揮這場交響樂了嗎？</h3>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-300">加入社群，領取你的指揮棒。下一個你聽到的聲音，將是你親手奏響的毀滅樂章。</p>
+                <div class="mt-8"><a href="https://discord.gg/GsEybpCGVa" target="_blank" class="inline-block px-10 py-5 text-xl font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">地獄見</a></div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="relative z-10 border-t border-white/10 py-6 bg-[#0a0a0a]/50">
+    <footer class="border-t border-white/10 py-8">
         <div class="container mx-auto px-6 text-center text-gray-500">
-            <p>&copy; 2025 LightningNuke. 僅供教育與研究目的使用。</p>
+            <p>&copy; 2025 LightningNuke. 一件為純粹學術好奇心打造的藝術品。</p>
         </div>
     </footer>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
+            console.log("%c嘿，偷看的小傢伙！", "color: #be185d; font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #be185d;");
+            console.log("%c想扒走這份程式碼？隨你。畢竟，用我的智慧結晶來彌補你那貧瘠的創造力，也算是一種慈善事業 :D", "color: #e5e5e5; font-size: 14px;");
+
             const preloader = document.getElementById('preloader');
-            window.addEventListener('load', () => {
-                preloader.classList.add('loaded');
-            });
-            
-             // --- Custom Cursor ---
-            const cursorDot = document.querySelector('.cursor-dot');
-            const cursorCircle = document.querySelector('.cursor-circle');
-            window.addEventListener('mousemove', e => {
-                cursorDot.style.left = `${e.clientX}px`;
-                cursorDot.style.top = `${e.clientY}px`;
-                cursorCircle.style.left = `${e.clientX}px`;
-                cursorCircle.style.top = `${e.clientY}px`;
-            });
-            document.querySelectorAll('a, button').forEach(el => {
-                el.addEventListener('mouseenter', () => document.body.classList.add('cursor-link-hover'));
-                el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-link-hover'));
+            window.addEventListener('load', () => { preloader.classList.add('loaded'); });
+
+            let lastScrollY = window.scrollY;
+            const header = document.getElementById('main-header');
+            window.addEventListener('scroll', () => {
+                if (lastScrollY < window.scrollY && window.scrollY > 100) {
+                    header.classList.add('header-hidden');
+                } else {
+                    header.classList.remove('header-hidden');
+                }
+                lastScrollY = window.scrollY;
             });
 
-            // --- Particle Background ---
+            // --- 全新互動式粒子背景 ---
             const canvas = document.getElementById('particle-canvas');
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                let particles = [];
-                let mouse = { x: null, y: null, radius: 100 };
-                
-                const setCanvasSize = () => {
-                    canvas.width = window.innerWidth;
-                    canvas.height = document.documentElement.scrollHeight; // Cover full page height
-                    initParticles();
-                };
-                window.addEventListener('resize', setCanvasSize);
-                
-                class Particle {
-                    constructor() {
-                        this.x = Math.random() * canvas.width;
-                        this.y = Math.random() * canvas.height;
-                        this.size = Math.random() * 2 + 1;
-                        this.baseX = this.x;
-                        this.baseY = this.y;
-                        this.density = (Math.random() * 30) + 1;
-                        this.color = `rgba(168, 85, 247, ${Math.random() * 0.5 + 0.2})`;
-                    }
-                    update() {
-                        let dx = mouse.x - this.x;
-                        let dy = mouse.y - this.y;
-                        let distance = Math.sqrt(dx * dx + dy * dy);
-                        if (distance < mouse.radius) {
-                            let force = (mouse.radius - distance) / mouse.radius;
-                            this.x -= (dx / distance) * force * this.density * 0.1;
-                            this.y -= (dy / distance) * force * this.density * 0.1;
-                        } else {
-                            if (this.x !== this.baseX) { this.x -= (this.x - this.baseX) / 10; }
-                            if (this.y !== this.baseY) { this.y -= (this.y - this.baseY) / 10; }
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let mouse = { x: null, y: null, radius: 100 };
+
+            window.addEventListener('mousemove', event => {
+                mouse.x = event.clientX;
+                mouse.y = event.clientY;
+            });
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            const resizeCanvas = () => { 
+                canvas.width = window.innerWidth; 
+                canvas.height = window.innerHeight; 
+                initParticles();
+            };
+            window.addEventListener('resize', resizeCanvas);
+            
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                    this.baseX = this.x;
+                    this.baseY = this.y;
+                    this.density = (Math.random() * 30) + 1;
+                    this.color = `rgba(190, 24, 93, ${Math.random() * 0.5 + 0.2})`;
+                }
+                update() {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let maxDistance = mouse.radius;
+                    let force = (maxDistance - distance) / maxDistance;
+                    let directionX = (forceDirectionX * force * this.density);
+                    let directionY = (forceDirectionY * force * this.density);
+
+                    if (distance < mouse.radius) {
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    } else {
+                        if (this.x !== this.baseX) {
+                            let dx = this.x - this.baseX;
+                            this.x -= dx / 10;
+                        }
+                        if (this.y !== this.baseY) {
+                            let dy = this.y - this.baseY;
+                            this.y -= dy / 10;
                         }
                     }
-                    draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
                 }
-                
-                function initParticles() {
-                    particles = [];
-                    let numberOfParticles = (canvas.height * canvas.width) / 12000;
-                    if(numberOfParticles > 250) numberOfParticles = 250;
-                    for (let i = 0; i < numberOfParticles; i++) {
-                        particles.push(new Particle());
-                    }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.fill();
                 }
-                
-                function animateParticles() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    for (let p of particles) { p.update(); p.draw(); }
-                    requestAnimationFrame(animateParticles);
-                }
-                
-                setCanvasSize();
-                animateParticles();
             }
 
-            // --- Typing Effect ---
-            const typingElement = document.querySelector('.typing-effect');
-            if(typingElement) {
-                const phrases = ["正在升級...", "混沌重構中...", "敬請期待...", "A NEW ERA IS COMING"];
-                let phraseIndex = 0, charIndex = 0, isDeleting = false, timeoutId;
-                function type() {
-                    clearTimeout(timeoutId);
-                    const currentPhrase = phrases[phraseIndex];
-                    let typeSpeed = 150;
-                    if (isDeleting) { typingElement.textContent = currentPhrase.substring(0, charIndex - 1); charIndex--; typeSpeed = 75; } 
-                    else { typingElement.textContent = currentPhrase.substring(0, charIndex + 1); charIndex++; }
-                    if (!isDeleting && charIndex === currentPhrase.length) { typeSpeed = 2000; isDeleting = true; } 
-                    else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; typeSpeed = 500; }
-                    timeoutId = setTimeout(type, typeSpeed);
+            const initParticles = () => {
+                particles = [];
+                let numberOfParticles = (canvas.height * canvas.width) / 9000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    particles.push(new Particle());
                 }
-                type();
-            }
+            };
             
-            // --- Countdown Timer ---
-            const countdownElement = document.getElementById('countdown');
-            if (countdownElement) {
-                const targetDate = new Date("Nov 1, 2025 00:00:00").getTime();
-                const [daysEl, hoursEl, minutesEl, secondsEl] = [document.getElementById('days'), document.getElementById('hours'), document.getElementById('minutes'), document.getElementById('seconds')];
-                const updateCountdown = () => {
-                    const distance = targetDate - new Date().getTime();
-                    if (distance < 0) { countdownElement.innerHTML = `<div class="col-span-4 text-4xl font-black text-glow">已上線！</div>`; clearInterval(interval); return; }
-                    daysEl.innerText = Math.floor(distance / 86400000).toString().padStart(2, '0');
-                    hoursEl.innerText = Math.floor((distance % 86400000) / 3600000).toString().padStart(2, '0');
-                    minutesEl.innerText = Math.floor((distance % 3600000) / 60000).toString().padStart(2, '0');
-                    secondsEl.innerText = Math.floor((distance % 60000) / 1000).toString().padStart(2, '0');
-                };
-                const interval = setInterval(updateCountdown, 1000);
-                updateCountdown();
-            }
-            
-            // --- Scroll Reveal ---
+            const animateParticles = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animateParticles);
+            };
+            resizeCanvas();
+            animateParticles();
+
+
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                if (window.innerWidth > 768) {
+                    canvas.style.transform = `translateY(${scrollY * 0.4}px)`;
+                }
+            });
+
             const revealElements = document.querySelectorAll('.reveal');
             const revealOnScroll = () => {
                 const windowHeight = window.innerHeight;
@@ -416,32 +431,190 @@
             };
             window.addEventListener('scroll', revealOnScroll);
             revealOnScroll();
+            
+            const typingElement = document.querySelector('.typing-effect');
+            if(typingElement) {
+                const phrases = [ "秩序的終結", "完美的混沌", "力量的化身", "一場藝術表演" ];
+                let phraseIndex = 0, charIndex = 0, isDeleting = false, timeoutId;
+                function type() {
+                    clearTimeout(timeoutId); const currentPhrase = phrases[phraseIndex]; let typeSpeed = 150;
+                    if (isDeleting) { typingElement.textContent = currentPhrase.substring(0, charIndex - 1); charIndex--; typeSpeed = 75; }
+                    else { typingElement.textContent = currentPhrase.substring(0, charIndex + 1); charIndex++; }
+                    if (!isDeleting && charIndex === currentPhrase.length) { typeSpeed = 2000; isDeleting = true; }
+                    else if (isDeleting && charIndex === 0) { isDeleting = false; phraseIndex = (phraseIndex + 1) % phrases.length; typeSpeed = 500;}
+                    timeoutId = setTimeout(type, typeSpeed);
+                }
+                type();
+            }
 
-            // --- Number Count Up Animation ---
-            const animateValue = (obj, start, end, duration) => {
-                let startTimestamp = null;
-                const step = (timestamp) => {
-                    if (!startTimestamp) startTimestamp = timestamp;
-                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                    obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
-                    if (progress < 1) window.requestAnimationFrame(step);
-                };
-                window.requestAnimationFrame(step);
-            };
-
-            const statsObserver = new IntersectionObserver((entries) => {
-                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        animateValue(document.getElementById('online-ops'), 0, 300, 2000);
-                        animateValue(document.getElementById('active-missions'), 0, 42, 2500);
-                        statsObserver.unobserve(entry.target);
-                    }
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--spotlight-x', `${x}px`);
+                    card.style.setProperty('--spotlight-y', `${y}px`);
                 });
-            }, { threshold: 0.5 });
-            statsObserver.observe(document.querySelector("#online-ops"));
+            });
 
+            const showcaseSection = document.getElementById('showcase');
+            if (showcaseSection) {
+                const messageContainer = document.getElementById('message-container');
+                const channelListContainer = document.getElementById('channel-list');
+                const typingIndicator = document.getElementById('typing-indicator');
+                const showcaseServerIcon = document.getElementById('showcase-server-icon');
+                const showcaseServerName = document.getElementById('showcase-server-name');
+                let simulationInterval;
+                const AVATAR_URL = "https://i.pinimg.com/736x/4d/1b/47/4d1b4727ae6fff4be96676918c9815f1.jpg";
+                const SERVER_NAME = "nuke by lightningnuke";
+                const EMBED_MESSAGE_TEXT = `Где... где же этот сладкий хаос? 💥\nДитя, ты слышишь шёпот бездны?..\nЭто всего лишь... начальная дрожь Апокалипсиса.\n---\nТы правда думал, что всё закончено?\nХа-ха... Как наивно.\nЭто — не конец. Это даже не пролог.\nЭто — рассвет вашей агонии. 💀\n---\nКогда-то я был лишь тенью...\nПосмейся, глядя на мой облик прошлого:\n64jcjSi.jpg\n\n...ведь это будет твой последний смех.\nСледующий звук, что ты услышишь — это звон разрушения.\nДо встречи в аду.\ndiscord.gg/lightningnuke`;
+                let startTime, createdChannels, activeChannelId, nukeEngine;
+                const createChannelHTML = (channel) => `<div id="channel-${channel.id}" class="relative p-2 rounded text-sm flex items-center justify-between transition-colors duration-100 ${channel.active ? 'bg-gray-600 text-white font-semibold' : 'text-gray-400 hover:bg-gray-700/50'}"><div class="flex items-center">${channel.active ? '<span class="absolute left-[-8px] w-1 h-3 bg-white rounded-r-full"></span>' : ''}<span class="mr-1">#</span><span class="truncate w-32">${channel.name}</span></div>${channel.pingCount > 0 ? `<span class="bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5">${channel.pingCount > 99 ? '99+' : channel.pingCount}</span>` : ''}</div>`;
+                const createMessageHTML = (time) => {
+                    const timeString = `今天 ${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')} AM`;
+                     return `<div class="flex items-start space-x-3 opacity-0 animate-fade-in"><img src="${AVATAR_URL}" class="w-10 h-10 rounded-full flex-shrink-0" alt="Bot Avatar"><div><p class="font-semibold text-purple-400">LightningNuke <span class="text-xs text-gray-400 font-normal ml-1">${timeString}</span></p><p class="text-white"><span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@everyone</span> <span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@here</span></p><div class="mt-2 p-3 bg-[#2f3136] border-l-4 border-purple-500 rounded"><p class="font-bold text-white text-lg">混沌降臨</p><p class="text-sm text-gray-300 whitespace-pre-wrap">${EMBED_MESSAGE_TEXT}</p></div></div></div>`;
+                };
+                const addDateSeparator = () => {
+                     const separator = document.createElement('div');
+                     separator.className = 'relative text-center my-2';
+                     separator.innerHTML = `<hr class="border-gray-600"><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2 bg-[#36393f] text-xs text-gray-400 font-semibold">2025年9月23日</span>`;
+                     messageContainer.appendChild(separator);
+                }
+                const render = () => {
+                    channelListContainer.innerHTML = createdChannels.map(createChannelHTML).join('');
+                    messageContainer.scrollTop = messageContainer.scrollHeight;
+                };
+                const nukeStep = () => {
+                    if (createdChannels.length < 15 && Math.random() > 0.6) {
+                        createdChannels.push({ id: createdChannels.length, name: `nuke-by-ln-${(Math.random() + 1).toString(36).substring(7)}`, active: false, pingCount: 0 });
+                    }
+                    if (createdChannels.length > 0) {
+                        const targetChannelIndex = Math.floor(Math.random() * createdChannels.length);
+                        const targetChannel = createdChannels[targetChannelIndex];
+                        targetChannel.pingCount += Math.floor(1 + Math.random() * 50);
+                        createdChannels.forEach(c => c.active = false);
+                        targetChannel.active = true; activeChannelId = targetChannel.id;
+                        startTime.setSeconds(startTime.getSeconds() + Math.floor(Math.random() * 5));
+                        const newElement = document.createElement('div');
+                        newElement.innerHTML = createMessageHTML(startTime);
+                        if (messageContainer.children.length > 20) messageContainer.removeChild(messageContainer.children[1]);
+                        messageContainer.appendChild(newElement.firstChild);
+                    }
+                    render();
+                };
+                const startSimulation = () => {
+                    if (nukeEngine) clearInterval(nukeEngine);
+                    messageContainer.innerHTML = ''; channelListContainer.innerHTML = ''; createdChannels = []; activeChannelId = null;
+                    startTime = new Date(); startTime.setHours(4, 3, 0, 0);
+                    showcaseServerIcon.src = AVATAR_URL; showcaseServerName.textContent = SERVER_NAME;
+                    typingIndicator.textContent = 'LightningNuke 正在執行...'; addDateSeparator();
+                    nukeEngine = setInterval(nukeStep, 400);
+                };
+                const showcaseObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => { if (entry.isIntersecting) { startSimulation(); showcaseObserver.unobserve(showcaseSection); } });
+                }, { threshold: 0.5 });
+                showcaseObserver.observe(showcaseSection);
+            }
+
+            const commandCenterSection = document.getElementById('command-center');
+            if (commandCenterSection) {
+                const animateValue = (obj, start, end, duration, isFloat = false) => {
+                    let startTimestamp = null;
+                    const step = (timestamp) => {
+                        if (!startTimestamp) startTimestamp = timestamp;
+                        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                        const value = progress * (end - start) + start;
+                        obj.innerHTML = isFloat ? value.toFixed(1) : Math.floor(value).toLocaleString();
+                        if (progress < 1) window.requestAnimationFrame(step);
+                    };
+                    window.requestAnimationFrame(step);
+                };
+                const statObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            animateValue(document.getElementById('stat-tasks'), 0, 4815, 2000);
+                            animateValue(document.getElementById('stat-members'), 0, 162342, 2500);
+                            animateValue(document.getElementById('stat-mentions'), 0, 12.8, 3000, true);
+                            statObserver.unobserve(commandCenterSection);
+                        }
+                    });
+                }, { threshold: 0.5 });
+                statObserver.observe(commandCenterSection);
+            }
+
+            const terminalSection = document.getElementById('interactive-terminal');
+            if (terminalSection) {
+                const terminalOutput = document.getElementById('terminal-output');
+                const terminalInput = document.getElementById('terminal-input');
+                const command = "!nuke";
+                let commandIndex = 0;
+                let logIndex = 0;
+                let terminalActive = false;
+                const logMessages = [
+                    { text: "Executing command: !nuke", level: 'info' },
+                    { text: "Initializing Nuke Sequence on Guild ID: 789123456...", level: 'info' }, { text: "Bypassing security protocols...", level: 'info' },
+                    { text: "SUCCESS: Admin privileges acquired.", level: 'success' }, { text: "Executing task: delete_all_channels_fast", level: 'info' },
+                    { text: "SUCCESS: Deleted 251 channels in 1.2s.", level: 'success' }, { text: "Executing task: create_channels_fast (count=50)", level: 'info' },
+                    { text: "WARN: Rate limit hit on channel creation. Retrying in 0.5s...", level: 'warn' }, { text: "SUCCESS: Created 50 channels.", level: 'success' },
+                    { text: "Executing task: spam_all_members_dm_fast", level: 'info' }, { text: "CRITICAL: Mass DM initiated to 1,204 members.", level: 'critical' },
+                    { text: "Executing task: ban_all_members_fast", level: 'info' }, { text: "SUCCESS: Banned 1,204 members.", level: 'success' },
+                    { text: "Executing task: change_guild_name", level: 'info' }, { text: "SUCCESS: Guild name changed to 'nuke by lightningnuke'.", level: 'success' },
+                    { text: "Finalizing...", level: 'info' }, { text: "CRITICAL: Nuke successful. Mission time: 8.7s. Leaving guild...", level: 'critical' },
+                ];
+                
+                function typeCommand() {
+                    if (commandIndex < command.length) {
+                        terminalInput.innerHTML += command.charAt(commandIndex);
+                        commandIndex++;
+                        setTimeout(typeCommand, 150);
+                    } else {
+                        setTimeout(runLogs, 500);
+                    }
+                }
+
+                function runLogs() {
+                    const fullCommand = terminalInput.innerHTML;
+                    terminalInput.innerHTML = '';
+                    terminalOutput.innerHTML += `<span class="text-green-400">root@lightningnuke</span><span class="text-gray-400">:</span><span class="text-blue-400">~</span><span class="text-gray-400">$ </span>${fullCommand}\n`;
+                    
+                    const typeLog = () => {
+                        if (logIndex >= logMessages.length) {
+                            terminalOutput.innerHTML += `<span class="log-info">> Sequence restarting in 10s...</span>\n\n`;
+                            setTimeout(() => {
+                                terminalOutput.innerHTML = '';
+                                terminalInput.innerHTML = '';
+                                commandIndex = 0;
+                                logIndex = 0;
+                                typeCommand();
+                            }, 10000);
+                            return;
+                        }
+                        const log = logMessages[logIndex];
+                        const timestamp = new Date();
+                        const timeString = `${timestamp.getHours().toString().padStart(2, '0')}:${timestamp.getMinutes().toString().padStart(2, '0')}:${timestamp.getSeconds().toString().padStart(2, '0')}`;
+                        terminalOutput.innerHTML += `<span class="text-gray-500">[${timeString}]</span> <span class="log-${log.level}">[${log.level.toUpperCase()}]</span> <span class="text-gray-300">${log.text}</span>\n`;
+                        terminalOutput.parentElement.scrollTop = terminalOutput.parentElement.scrollHeight;
+                        logIndex++;
+                        setTimeout(typeLog, Math.random() * 300 + 100);
+                    };
+                    typeLog();
+                }
+
+                const terminalObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !terminalActive) {
+                           terminalActive = true;
+                           setTimeout(typeCommand, 1000);
+                           terminalObserver.unobserve(terminalSection);
+                        }
+                    });
+                }, { threshold: 0.6 });
+
+                terminalObserver.observe(terminalSection);
+            }
         });
     </script>
-
 </body>
 </html>
+
