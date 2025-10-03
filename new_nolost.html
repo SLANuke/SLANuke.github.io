@@ -1,183 +1,168 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>n0lost - 潛伏結束</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #e5e5e5; }
-        .hero-bg { position: relative; overflow: hidden; background-color: #000; }
-        .hero-bg::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(0deg, transparent 24%, rgba(255, 0, 0, 0.2) 25%, rgba(255, 0, 0, 0.2) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, 0.2) 75%, rgba(0, 255, 0, 0.2) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 0, 255, 0.2) 25%, rgba(0, 0, 255, 0.2) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, 0.2) 75%, rgba(255, 0, 0, 0.2) 76%, transparent 77%, transparent); background-size: 50px 50px; animation: glitch-scan 15s linear infinite; z-index: 1; }
-        @keyframes glitch-scan { 0% { background-position: 0 0; } 100% { background-position: 100px 100px; } }
-        .hero-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(10, 10, 10, 1), rgba(10, 10, 10, 0.7)); z-index: 2; }
-        .text-glow { text-shadow: 0 0 8px rgba(220, 38, 38, 0.6), 0 0 20px rgba(239, 68, 68, 0.4); }
-        .card { background-color: rgba(23, 23, 23, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-primary { background-image: linear-gradient(to right, #b91c1c, #ef4444); }
-        .btn-secondary { background-color: rgba(30, 30, 30, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .code-block { background-color: #111827; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .section-title::after { content: ''; display: block; width: 60px; height: 3px; background-image: linear-gradient(to right, #b91c1c, #ef4444); margin: 1rem auto 0; border-radius: 2px; }
-        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>n0lost — 潛伏結束 | 深淵重組</title>
+  <meta name="description" content="n0lost — 在灰燼之中重組。加入我們，見證舊秩序崩壞的時刻。專注於速度、韌性與暗影協作。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{--bg:#050507;--muted:#9ca3af;--accent1:#ef4444;--accent2:#b91c1c;--card:#111214}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+    body{background:radial-gradient(circle at center, #0a0a0a, #000);color:#e6e6e6;overflow-x:hidden;scroll-behavior:smooth}
+
+    #particle-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:96px 20px 60px;position:relative;z-index:2;animation:fadeIn 2s ease-out}
+    .hero-inner{max-width:1100px;width:100%;display:flex;gap:32px;align-items:center;animation:slideUp 1.5s ease-out}
+    .hero-left{flex:1}
+    .hero-right{width:420px;animation:slideRight 1.8s ease-out}
+
+    .logo{font-weight:900;letter-spacing:-0.02em;font-size:28px}
+    .glow-title{font-size:56px;font-weight:900;line-height:1.02;text-transform:uppercase;text-shadow:0 0 20px rgba(239,68,68,0.5),0 0 40px rgba(185,28,28,0.3);animation:flicker 3s infinite alternate}
+    .sub{color:var(--muted);margin-top:12px;font-size:18px;animation:fadeIn 3s ease-in}
+
+    .btn{display:inline-block;padding:12px 20px;border-radius:12px;font-weight:700;text-decoration:none;transition:transform .2s ease, box-shadow .2s ease}
+    .btn-primary{background:linear-gradient(90deg,var(--accent2),var(--accent1));box-shadow:0 0 15px rgba(239,68,68,0.4)}
+    .btn-primary:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(239,68,68,0.6)}
+    .btn-ghost{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04)}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.05);padding:18px;border-radius:14px;transition:transform .3s ease}
+    .card:hover{transform:translateY(-6px)}
+
+    .section-title{font-weight:900;font-size:32px;margin-bottom:8px;text-shadow:0 0 10px rgba(239,68,68,0.4);animation:fadeIn 2s ease-in}
+    .section-sub{color:var(--muted);margin-bottom:18px}
+
+    .timeline{display:flex;flex-direction:column;gap:18px}
+    .tl-item{display:flex;gap:14px;align-items:flex-start;opacity:0;transform:translateX(-50px);transition:all 1s ease}
+    .tl-item.visible{opacity:1;transform:translateX(0)}
+    .tl-badge{min-width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;font-weight:900;box-shadow:0 0 10px rgba(239,68,68,0.5)}
+
+    footer{padding:28px 16px;border-top:1px solid rgba(255,255,255,0.03);text-align:center;color:var(--muted);animation:fadeIn 3s ease-in}
+
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideRight{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes flicker{0%{opacity:1}50%{opacity:.8}100%{opacity:1}}
+    @keyframes typing{from{width:0}to{width:100%}}
+    @keyframes blink{50%{border-color:transparent}}
+
+    .typing{overflow:hidden;border-right:.15em solid #ef4444;white-space:nowrap;animation:typing 4s steps(40,end), blink .75s step-end infinite}
+
+    @media (max-width:900px){.hero-inner{flex-direction:column}.hero-right{width:100%}}
+  </style>
 </head>
-<body class="antialiased">
+<body>
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold tracking-tighter text-glow">n0lost</h1>
-        <a href="https://discord.gg/4RHhStYVkC" target="_blank" class="hidden md:inline-block px-5 py-2 text-sm font-semibold rounded-lg btn-primary hover:opacity-90 transition-opacity">踏入戰線</a>
+  <header style="position:fixed;left:0;right:0;top:0;z-index:3;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);animation:slideDown 1.2s ease-out">
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="logo">n0lost</div>
+      <div style="color:var(--muted);font-size:13px">潛伏結束 · 深淵重組</div>
     </div>
-</header>
+    <nav style="display:flex;gap:12px;align-items:center">
+      <a class="btn btn-ghost" href="#manifesto">宣言</a>
+      <a class="btn btn-ghost" href="#process">進程</a>
+      <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank" rel="noopener">踏入深淵</a>
+    </nav>
+  </header>
 
-<main>
-    <!-- Hero -->
-    <section class="hero-bg min-h-screen flex items-center justify-center pt-20">
-        <div class="hero-overlay"></div>
-        <div class="text-center px-6 reveal z-10 relative">
-            <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-glow">潛伏結束</h2>
-            <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-300">
-                ⚠️ 舊秩序已崩潰，灰燼之中誕生新火。<br>
-                所有信號指向 —— n0lost。
-            </p>
-            <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://discord.gg/4RHhStYVkC" target="_blank" class="px-8 py-4 text-lg font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">踏入戰線</a>
-                <a href="#manifesto" class="px-8 py-4 text-lg font-bold rounded-lg btn-secondary hover:bg-gray-800 transition-colors">閱讀誓言</a>
-            </div>
+  <main>
+    <section class="hero" role="banner">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div style="margin-bottom:8px"><span class="glow-title typing">潛伏結束</span></div>
+          <h1 style="font-size:20px;margin:8px 0 0;font-weight:700">舊秩序的餘燼，孕育新的火種。</h1>
+          <p class="sub">我們不追求混亂本身——我們用混亂重塑秩序。速度是勳章，韌性是信條。</p>
+          <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+            <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank" rel="noopener">立即加入</a>
+            <a class="btn btn-ghost" href="#manifesto">閱讀誓言</a>
+          </div>
         </div>
+        <aside class="hero-right">
+          <div class="card">
+            <div style="font-weight:900">我們的誓言</div>
+            <div style="color:var(--muted);margin-top:8px">不為寬恕，只為清算 — 在灰燼之上築起新的黎明。</div>
+          </div>
+        </aside>
+      </div>
     </section>
 
-    <!-- Manifesto -->
-    <section id="manifesto" class="py-20 sm:py-32">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16 reveal">
-                <h3 class="text-4xl md:text-5xl font-black section-title">我們的誓言</h3>
-                <p class="mt-4 max-w-2xl mx-auto text-gray-400">不為寬恕，只為清算。</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div class="card p-8 rounded-2xl reveal text-center">
-                    <h4 class="text-2xl font-bold mb-2">中文</h4>
-                    <p class="text-gray-300 text-lg">我們將擊碎虛假的秩序，重建新的黎明。</p>
-                </div>
-                <div class="card p-8 rounded-2xl reveal text-center">
-                    <h4 class="text-2xl font-bold mb-2">English</h4>
-                    <p class="text-gray-300 text-lg">We rise to break illusions, forging a dawn reborn.</p>
-                </div>
-                <div class="card p-8 rounded-2xl reveal text-center">
-                    <h4 class="text-2xl font-bold mb-2">ខ្មែរ</h4>
-                    <p class="text-gray-300 text-lg">យើងនឹងកំទេចកាយចាស់ ហើយបង្កើតព្រះអាទិត្យថ្មី។</p>
-                </div>
-                <div class="card p-8 rounded-2xl reveal text-center">
-                    <h4 class="text-2xl font-bold mb-2">極限證明 (429)</h4>
-                    <p class="text-gray-300 text-lg">速度不再是限制，而是力量的徽章。</p>
-                </div>
-            </div>
+    <section id="manifesto" style="padding:72px 18px;position:relative;z-index:2">
+      <div style="max-width:1100px;margin:0 auto;text-align:center">
+        <div class="section-title">我們的宣言</div>
+        <div class="section-sub">不為寬恕，只為清算。每一次回擊，都是新的秩序序章。</div>
+        <p style="color:var(--muted)">我們不是淺薄的宣言者；我們是行動者。在暗處集結，在網絡間運作。</p>
+        <div style="margin-top:32px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
+          <div class="card" style="flex:1;min-width:200px">
+            <h3 style="font-weight:800">🔥 數據之力</h3>
+            <p style="color:var(--muted);font-size:14px" id="counter1">0</p>
+          </div>
+          <div class="card" style="flex:1;min-width:200px">
+            <h3 style="font-weight:800">⚡ 韌性紀錄</h3>
+            <p style="color:var(--muted);font-size:14px" id="counter2">0</p>
+          </div>
+          <div class="card" style="flex:1;min-width:200px">
+            <h3 style="font-weight:800">🌑 同盟擴展</h3>
+            <p style="color:var(--muted);font-size:14px" id="counter3">0</p>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- Process -->
-    <section id="process" class="py-20 sm:py-32">
-        <div class="container mx-auto px-6 text-center mb-16 reveal">
-            <h3 class="text-4xl md:text-5xl font-black section-title">進程</h3>
-            <p class="mt-4 max-w-2xl mx-auto text-gray-400">裂變的每一步，皆是風暴的序曲。</p>
+    <section id="process" style="padding:72px 18px;position:relative;z-index:2">
+      <div style="max-width:900px;margin:0 auto">
+        <div class="section-title" style="text-align:center">進程</div>
+        <div class="section-sub" style="text-align:center">裂變的每一步，皆是風暴的序曲。</div>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-badge">1</div><div><b>影子蘇醒</b><div style="color:var(--muted);font-size:13px">沉默的盟友開始現身。</div></div></div>
+          <div class="tl-item"><div class="tl-badge">2</div><div><b>坐標確立</b><div style="color:var(--muted);font-size:13px">目標被精準定位。</div></div></div>
+          <div class="tl-item"><div class="tl-badge">3</div><div><b>舊殼粉碎</b><div style="color:var(--muted);font-size:13px">腐敗與虛偽被徹底抹清。</div></div></div>
+          <div class="tl-item"><div class="tl-badge">4</div><div><b>聲音迴響</b><div style="color:var(--muted);font-size:13px">新秩序的信號迴盪。</div></div></div>
+          <div class="tl-item"><div class="tl-badge">5</div><div><b>深淵再生</b><div style="color:var(--muted);font-size:13px">行動進入下一階段。</div></div></div>
         </div>
-        <div class="max-w-2xl mx-auto">
-            <div class="relative">
-                <div class="timeline-item relative pl-16 pb-10 reveal">
-                    <h4 class="text-2xl font-bold mb-1">影子蘇醒</h4>
-                    <p class="text-gray-400">沉默的盟友開始現身。</p>
-                </div>
-                <div class="timeline-item relative pl-16 pb-10 reveal">
-                    <h4 class="text-2xl font-bold mb-1">坐標確立</h4>
-                    <p class="text-gray-400">目標已落入紅線，顫抖無處可逃。</p>
-                </div>
-                <div class="timeline-item relative pl-16 pb-10 reveal">
-                    <h4 class="text-2xl font-bold mb-1">舊殼粉碎</h4>
-                    <p class="text-gray-400">腐敗與虛偽被徹底抹消。</p>
-                </div>
-                <div class="timeline-item relative pl-16 pb-10 reveal">
-                    <h4 class="text-2xl font-bold mb-1">聲音迴響</h4>
-                    <p class="text-gray-400">新秩序的信號，迴盪四方。</p>
-                </div>
-                <div class="timeline-item relative pl-16 reveal">
-                    <h4 class="text-2xl font-bold mb-1">深淵再生</h4>
-                    <p class="text-gray-400">引導追隨者，進入新的基地。</p>
-                </div>
-            </div>
-        </div>
+      </div>
     </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="py-20 sm:py-32">
-        <div class="container mx-auto px-6">
-            <div class="max-w-4xl mx-auto text-center reveal mb-16">
-                <h3 class="text-4xl md:text-5xl font-black section-title">常見問題</h3>
-            </div>
-            <div class="max-w-3xl mx-auto space-y-4">
-                <div class="faq-item card rounded-lg reveal p-6">
-                    <h4 class="font-semibold text-xl mb-2">這是一個什麼組織？</h4>
-                    <p class="text-gray-400">我們不是組織，而是一場風暴。風暴沒有領袖，只有方向。</p>
-                </div>
-                <div class="faq-item card rounded-lg reveal p-6">
-                    <h4 class="font-semibold text-xl mb-2">你們的目標是什麼？</h4>
-                    <p class="text-gray-400">擊碎謊言，拆穿偽裝。讓混亂成為重塑秩序的火種。</p>
-                </div>
-                <div class="faq-item card rounded-lg reveal p-6">
-                    <h4 class="font-semibold text-xl mb-2">加入會有風險嗎？</h4>
-                    <p class="text-gray-400">風險即榮耀。唯有勇者能留下名號。</p>
-                </div>
-                <div class="faq-item card rounded-lg reveal p-6">
-                    <h4 class="font-semibold text-xl mb-2">我該如何貢獻力量？</h4>
-                    <p class="text-gray-400">成為信號的一部分。每一個回應，都是混亂的擴散。</p>
-                </div>
-            </div>
-        </div>
+    <section style="padding:64px 18px;position:relative;z-index:2;text-align:center">
+      <div class="section-title">加入我們</div>
+      <p class="section-sub">選擇陣營，成為這場重塑的一部分。</p>
+      <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank">踏入深淵</a>
     </section>
+  </main>
 
-    <!-- Warning -->
-    <section id="warning" class="py-20 sm:py-32">
-        <div class="container mx-auto px-6">
-            <div class="max-w-4xl mx-auto card border-l-4 border-red-500 rounded-2xl p-8 reveal">
-                <h3 class="text-3xl font-black text-white">嚴正誓告</h3>
-                <p class="mt-2 text-gray-300">我們不為混亂辯解，因為我們就是混亂。<br>加入 n0lost，即代表你已接受深淵的召喚。</p>
-            </div>
-        </div>
-    </section>
+  <footer>
+    <div>&copy; 2025 n0lost. 潛伏已結束。 Designed for impact.</div>
+  </footer>
 
-    <!-- CTA -->
-    <section class="pb-20 sm:pb-32">
-        <div class="container mx-auto px-6 text-center reveal">
-            <h3 class="text-4xl md:text-5xl font-black text-glow">準備好迎接裂變了嗎？</h3>
-            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-300">下一聲鐘響，將是舊秩序的終結。</p>
-            <div class="mt-8">
-                <a href="https://discord.gg/4RHhStYVkC" target="_blank" class="inline-block px-10 py-5 text-xl font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">踏入深淵</a>
-            </div>
-        </div>
-    </section>
-</main>
+  <script>
+    // Particle background with drifting glow
+    (function(){
+      const canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d');
+      let w=canvas.width=innerWidth,h=canvas.height=innerHeight;let particles=[];
+      function rand(min,max){return Math.random()*(max-min)+min}
+      function init(){particles=[];for(let i=0;i<120;i++){particles.push({x:rand(0,w),y:rand(0,h),r:rand(1,3),vx:rand(-.5,.5),vy:rand(-.3,.3),a:rand(.2,.6)})}}
+      function step(){ctx.clearRect(0,0,w,h);for(const p of particles){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;ctx.beginPath();ctx.fillStyle=`rgba(239,68,68,${p.a})`;ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()}requestAnimationFrame(step)}
+      addEventListener('resize',()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight;init()});init();step();
+    })();
 
-<footer class="border-t border-white/10 py-8">
-    <div class="container mx-auto px-6 text-center text-gray-500">
-        <p>&copy; 2025 n0lost. 潛伏已結束，裂變正在進行。</p>
-    </div>
-</footer>
-
-<script src="//unpkg.com/alpinejs" defer></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealOnScroll = () => {
-            const windowHeight = window.innerHeight;
-            revealElements.forEach(el => {
-                if (el.getBoundingClientRect().top < windowHeight - 100) {
-                    el.classList.add('visible');
-                }
-            });
-        };
-        window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll();
+    // Timeline animation reveal
+    document.addEventListener('DOMContentLoaded',()=>{
+      const items=document.querySelectorAll('.tl-item');
+      const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1});
+      items.forEach(i=>obs.observe(i));
     });
-</script>
+
+    // Counter animation
+    function animateCounter(id, target){
+      const el=document.getElementById(id);let c=0;const step=target/100;function update(){c+=step;if(c>=target){c=target}el.textContent=Math.floor(c);if(c<target){requestAnimationFrame(update)}}update()}
+    window.addEventListener('load',()=>{
+      animateCounter('counter1',429);
+      animateCounter('counter2',777);
+      animateCounter('counter3',99);
+    });
+  </script>
 </body>
 </html>
