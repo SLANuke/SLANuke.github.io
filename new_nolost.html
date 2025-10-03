@@ -3,166 +3,491 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>n0lost — 潛伏結束 | 深淵重組</title>
-  <meta name="description" content="n0lost — 在灰燼之中重組。加入我們，見證舊秩序崩壞的時刻。專注於速度、韌性與暗影協作。" />
+  <title>n0lost — 終極統治工具</title>
+  <meta name="description" content="n0lost — 終極 Discord 武器。一鍵接管，秒殺全場。為絕對的掌控力而生。" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root{--bg:#050507;--muted:#9ca3af;--accent1:#ef4444;--accent2:#b91c1c;--card:#111214}
-    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
-    body{background:radial-gradient(circle at center, #0a0a0a, #000);color:#e6e6e6;overflow-x:hidden;scroll-behavior:smooth}
+    :root{
+        --bg:#050507;
+        --muted:#9ca3af;
+        --accent1:#ef4444;
+        --accent2:#b91c1c;
+        --card-bg:rgba(17, 18, 20, 0.5);
+        --border-color: rgba(255, 255, 255, 0.1);
+        --glow-color: rgba(239, 68, 68, 0.5);
+    }
+    html,body{
+        height:100%;
+        margin:0;
+        font-family: 'Inter', 'Noto Sans TC', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        cursor: none; /* 隱藏預設游標 */
+    }
+    body{
+        background-color: var(--bg);
+        background-image: 
+            radial-gradient(circle at top left, rgba(239, 68, 68, 0.15), transparent 35%), 
+            radial-gradient(circle at bottom right, rgba(185, 28, 28, 0.15), transparent 35%),
+            linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.04'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        color:#e6e6e6;
+        overflow-x:hidden;
+        scroll-behavior:smooth;
+    }
+    /* 自訂游標 */
+    .cursor {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--accent1);
+        border-radius: 50%;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, transform 0.1s ease-out;
+    }
+    .cursor.hovered {
+        width: 40px;
+        height: 40px;
+        background-color: var(--glow-color);
+    }
 
-    #particle-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+    #scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent2), var(--accent1));
+        width: 0%;
+        z-index: 100;
+        box-shadow: 0 0 10px var(--glow-color);
+    }
+    #particle-canvas{
+        position:fixed;
+        inset:0;
+        z-index:0;
+        pointer-events:none;
+        opacity: 0.6;
+    }
 
-    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:96px 20px 60px;position:relative;z-index:2;animation:fadeIn 2s ease-out}
-    .hero-inner{max-width:1100px;width:100%;display:flex;gap:32px;align-items:center;animation:slideUp 1.5s ease-out}
-    .hero-left{flex:1}
-    .hero-right{width:420px;animation:slideRight 1.8s ease-out}
-
-    .logo{font-weight:900;letter-spacing:-0.02em;font-size:28px}
-    .glow-title{font-size:56px;font-weight:900;line-height:1.02;text-transform:uppercase;text-shadow:0 0 20px rgba(239,68,68,0.5),0 0 40px rgba(185,28,28,0.3);animation:flicker 3s infinite alternate}
-    .sub{color:var(--muted);margin-top:12px;font-size:18px;animation:fadeIn 3s ease-in}
-
-    .btn{display:inline-block;padding:12px 20px;border-radius:12px;font-weight:700;text-decoration:none;transition:transform .2s ease, box-shadow .2s ease}
-    .btn-primary{background:linear-gradient(90deg,var(--accent2),var(--accent1));box-shadow:0 0 15px rgba(239,68,68,0.4)}
-    .btn-primary:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(239,68,68,0.6)}
-    .btn-ghost{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04)}
-
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.05);padding:18px;border-radius:14px;transition:transform .3s ease}
-    .card:hover{transform:translateY(-6px)}
-
-    .section-title{font-weight:900;font-size:32px;margin-bottom:8px;text-shadow:0 0 10px rgba(239,68,68,0.4);animation:fadeIn 2s ease-in}
-    .section-sub{color:var(--muted);margin-bottom:18px}
-
-    .timeline{display:flex;flex-direction:column;gap:18px}
-    .tl-item{display:flex;gap:14px;align-items:flex-start;opacity:0;transform:translateX(-50px);transition:all 1s ease}
-    .tl-item.visible{opacity:1;transform:translateX(0)}
-    .tl-badge{min-width:44px;height:44px;border-radius:10px;background:linear-gradient(180deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;font-weight:900;box-shadow:0 0 10px rgba(239,68,68,0.5)}
-
-    footer{padding:28px 16px;border-top:1px solid rgba(255,255,255,0.03);text-align:center;color:var(--muted);animation:fadeIn 3s ease-in}
-
+    /* 動畫效果增強 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left { transform: translateX(-50px); }
+    .reveal-right { transform: translateX(50px); }
+    .reveal-left.active, .reveal-right.active { transform: translateX(0); }
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}
     @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes slideRight{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:translateX(0)}}
-    @keyframes flicker{0%{opacity:1}50%{opacity:.8}100%{opacity:1}}
-    @keyframes typing{from{width:0}to{width:100%}}
-    @keyframes blink{50%{border-color:transparent}}
+    @keyframes flicker{
+      0%, 100% { opacity: 1; text-shadow: 0 0 25px var(--glow-color), 0 0 50px var(--accent2); }
+      50% { opacity: 0.8; text-shadow: 0 0 15px var(--glow-color), 0 0 30px var(--accent2); }
+    }
+    /* 主要區塊樣式 */
+    .hero{
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:96px 20px 60px;
+        position:relative;
+        z-index:2;
+        flex-direction: column;
+    }
+    .hero-inner{
+        max-width:1100px;
+        width:100%;
+        text-align: center;
+        animation:fadeIn 2s ease-out;
+    }
+    .glow-title {
+        font-size: clamp(2.8rem, 8vw, 5.5rem);
+        font-weight:900;
+        line-height:1.1;
+        text-transform:uppercase;
+        letter-spacing: 0.05em;
+        animation: flicker 4s infinite alternate;
+        margin-bottom: 1rem;
+    }
+    .subtitle{
+        color:var(--muted);
+        margin: 1rem auto 0;
+        font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+        max-width: 700px;
+        line-height: 1.8;
+        animation:slideUp 1.5s ease-out 0.5s;
+        animation-fill-mode: backwards;
+    }
+    .scroll-down-indicator {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite;
+        z-index: 3;
+    }
+    @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); } 40% { transform: translate(-50%, -20px); } 60% { transform: translate(-50%, -10px); } }
 
-    .typing{overflow:hidden;border-right:.15em solid #ef4444;white-space:nowrap;animation:typing 4s steps(40,end), blink .75s step-end infinite}
+    .btn{
+        display:inline-block;
+        padding:14px 28px;
+        border-radius:12px;
+        font-weight:700;
+        text-decoration:none;
+        transition: all .3s ease;
+        border: 1px solid transparent;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    .btn-primary{
+        background:linear-gradient(95deg,var(--accent2),var(--accent1));
+        box-shadow:0 0 20px rgba(239,68,68,0.4);
+        color: #fff;
+    }
+    .btn-primary:hover{
+        transform:scale(1.05) translateY(-2px);
+        box-shadow:0 0 35px rgba(239,68,68,0.7);
+    }
+    .btn-ghost{
+        background:rgba(255,255,255,0.03);
+        border-color: var(--border-color);
+        color: #e6e6e6;
+    }
+    .btn-ghost:hover {
+      background:rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.3);
+    }
+    .card{
+        background:var(--card-bg);
+        border:1px solid rgba(255,255,255,0.08);
+        padding:24px;
+        border-radius:16px;
+        transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+        backdrop-filter: blur(12px);
+        height: 100%;
+    }
+    .card:hover{
+        transform:translateY(-8px);
+        border-color: rgba(239, 68, 68, 0.4);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    .section-title{
+        font-weight:900;
+        font-size: clamp(2.2rem, 5vw, 2.8rem);
+        margin-bottom:12px;
+        text-shadow:0 0 15px var(--glow-color);
+    }
+    .section-sub{
+        color:var(--muted);
+        margin-bottom:24px;
+        max-width: 650px;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 1.15rem;
+        line-height: 1.8;
+    }
 
-    @media (max-width:900px){.hero-inner{flex-direction:column}.hero-right{width:100%}}
+    .timeline{
+        position: relative;
+        display:flex;
+        flex-direction:column;
+        gap: 24px;
+        padding: 20px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 21px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--accent2) 0%, transparent 100%);
+        z-index: 0;
+    }
+    .tl-item{
+        display:flex;
+        gap:18px;
+        align-items:center;
+        position: relative;
+    }
+    .tl-badge{
+        flex-shrink: 0;
+        width:44px;
+        height:44px;
+        border-radius:50%;
+        background:linear-gradient(180deg,var(--accent2),var(--accent1));
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        box-shadow:0 0 15px rgba(239,68,68,0.6);
+        z-index: 1;
+        border: 2px solid var(--bg);
+    }
+
+    footer{
+        padding:40px 16px;
+        border-top:1px solid var(--border-color);
+        text-align:center;
+        color:var(--muted);
+        background-color: rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 2;
+    }
   </style>
 </head>
 <body>
+  <div class="cursor"></div>
+  <div id="scroll-progress"></div>
   <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
-  <header style="position:fixed;left:0;right:0;top:0;z-index:3;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);animation:slideDown 1.2s ease-out">
+  <header style="position:fixed;left:0;right:0;top:0;z-index:10;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(5,5,7,0.7);backdrop-filter:blur(12px);border-bottom: 1px solid rgba(255,255,255,0.08);animation:slideDown 1.2s ease-out;">
     <div style="display:flex;gap:12px;align-items:center">
-      <div class="logo">n0lost</div>
-      <div style="color:var(--muted);font-size:13px">潛伏結束 · 深淵重組</div>
+      <div class="logo" style="font-weight:900;letter-spacing:-0.02em;font-size:24px;">n0lost</div>
     </div>
     <nav style="display:flex;gap:12px;align-items:center">
-      <a class="btn btn-ghost" href="#manifesto">宣言</a>
-      <a class="btn btn-ghost" href="#process">進程</a>
-      <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank" rel="noopener">踏入深淵</a>
+      <a class="btn btn-ghost" href="#features">功能軍火庫</a>
+      <a class="btn btn-ghost" href="#process">攻擊剖析</a>
+      <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank" rel="noopener">獲取權限</a>
     </nav>
   </header>
 
   <main>
     <section class="hero" role="banner">
       <div class="hero-inner">
-        <div class="hero-left">
-          <div style="margin-bottom:8px"><span class="glow-title typing">潛伏結束</span></div>
-          <h1 style="font-size:20px;margin:8px 0 0;font-weight:700">舊秩序的餘燼，孕育新的火種。</h1>
-          <p class="sub">我們不追求混亂本身——我們用混亂重塑秩序。速度是勳章，韌性是信條。</p>
-          <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-            <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank" rel="noopener">立即加入</a>
-            <a class="btn btn-ghost" href="#manifesto">閱讀誓言</a>
-          </div>
-        </div>
-        <aside class="hero-right">
-          <div class="card">
-            <div style="font-weight:900">我們的誓言</div>
-            <div style="color:var(--muted);margin-top:8px">不為寬恕，只為清算 — 在灰燼之上築起新的黎明。</div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section id="manifesto" style="padding:72px 18px;position:relative;z-index:2">
-      <div style="max-width:1100px;margin:0 auto;text-align:center">
-        <div class="section-title">我們的宣言</div>
-        <div class="section-sub">不為寬恕，只為清算。每一次回擊，都是新的秩序序章。</div>
-        <p style="color:var(--muted)">我們不是淺薄的宣言者；我們是行動者。在暗處集結，在網絡間運作。</p>
-        <div style="margin-top:32px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
-          <div class="card" style="flex:1;min-width:200px">
-            <h3 style="font-weight:800">🔥 數據之力</h3>
-            <p style="color:var(--muted);font-size:14px" id="counter1">0</p>
-          </div>
-          <div class="card" style="flex:1;min-width:200px">
-            <h3 style="font-weight:800">⚡ 韌性紀錄</h3>
-            <p style="color:var(--muted);font-size:14px" id="counter2">0</p>
-          </div>
-          <div class="card" style="flex:1;min-width:200px">
-            <h3 style="font-weight:800">🌑 同盟擴展</h3>
-            <p style="color:var(--muted);font-size:14px" id="counter3">0</p>
-          </div>
+        <h1 class="glow-title" id="hero-title">秩序重定義</h1>
+        <p class="subtitle">規則，是用來打破的。我們不遵守遊戲規則，我們創造規則。n0lost 不是一個普通的工具，它是一把鑰匙，賦予你定義 Discord 伺服器命運的終極權力。</p>
+        <div style="margin-top:32px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:center;animation:slideUp 1.5s ease-out 0.8s;animation-fill-mode: backwards;">
+          <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank" rel="noopener">立即掌控</a>
+          <a class="btn btn-ghost" href="#features">檢視武器庫</a>
         </div>
       </div>
+      <a href="#features" class="scroll-down-indicator" aria-label="Scroll down">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>
+      </a>
+    </section>
+    
+    <section id="features" style="padding:100px 18px;position:relative;z-index:2; background-color: rgba(0,0,0,0.1);">
+        <div style="max-width:1100px;margin:0 auto;text-align:center">
+            <div class="section-title reveal">功能軍火庫</div>
+            <div class="section-sub reveal" style="transition-delay: 0.2s;">為絕對統治而設計的精密武器。每一項功能，都是你意志的延伸。</div>
+            <div style="margin-top:40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;">
+                <div class="card card-3d reveal" style="transition-delay: 0.3s;">
+                    <h3 style="font-weight:800; font-size: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline><line x1="10" y1="14" x2="14" y2="18"></line><line x1="14" y1="14" x2="10" y2="18"></line></svg>
+                      一鍵清掃
+                    </h3>
+                    <p style="color:var(--muted);margin-top: 12px;">瞬間刪除所有頻道、身份組與表情符號。將舊世界的痕跡徹底抹除，為你的新秩序鋪平道路。</p>
+                </div>
+                <div class="card card-3d reveal" style="transition-delay: 0.4s;">
+                    <h3 style="font-weight:800; font-size: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                      視覺轟炸
+                    </h3>
+                    <p style="color:var(--muted);margin-top: 12px;">以無可匹敵的速度，在所有頻道中發送海量訊息。文字、圖片、標註，讓伺服器的每一個角落都充滿你的聲音。</p>
+                </div>
+                <div class="card card-3d reveal" style="transition-delay: 0.5s;">
+                    <h3 style="font-weight:800; font-size: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="2" y1="12" x2="22" y2="12"></line><line x1="15" y1="3" x2="22" y2="12"></line><line x1="15" y1="21" x2="22" y2="12"></line></svg>
+                      權力剝奪
+                    </h3>
+                    <p style="color:var(--muted);margin-top: 12px;">秒速踢出或封鎖伺服器內所有成員，包括管理員。在絕對的力量面前，任何權限都形同虛設。</p>
+                </div>
+                <div class="card card-3d reveal" style="transition-delay: 0.6s;">
+                    <h3 style="font-weight:800; font-size: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                      精神污染
+                    </h3>
+                    <p style="color:var(--muted);margin-top: 12px;">向伺服器所有成員發送自訂的私人訊息。將你的意志直接植入每個人的腦中，無處可逃。</p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <section id="process" style="padding:72px 18px;position:relative;z-index:2">
+    <section id="process" style="padding:100px 18px;position:relative;z-index:2; ">
       <div style="max-width:900px;margin:0 auto">
-        <div class="section-title" style="text-align:center">進程</div>
-        <div class="section-sub" style="text-align:center">裂變的每一步，皆是風暴的序曲。</div>
+        <div class="section-title reveal" style="text-align:center">攻擊剖析</div>
+        <div class="section-sub reveal" style="text-align:center; transition-delay: 0.2s;">從滲透到宣告，每一步都經過精心設計，如同一場完美的藝術表演。</div>
         <div class="timeline">
-          <div class="tl-item"><div class="tl-badge">1</div><div><b>影子蘇醒</b><div style="color:var(--muted);font-size:13px">沉默的盟友開始現身。</div></div></div>
-          <div class="tl-item"><div class="tl-badge">2</div><div><b>坐標確立</b><div style="color:var(--muted);font-size:13px">目標被精準定位。</div></div></div>
-          <div class="tl-item"><div class="tl-badge">3</div><div><b>舊殼粉碎</b><div style="color:var(--muted);font-size:13px">腐敗與虛偽被徹底抹清。</div></div></div>
-          <div class="tl-item"><div class="tl-badge">4</div><div><b>聲音迴響</b><div style="color:var(--muted);font-size:13px">新秩序的信號迴盪。</div></div></div>
-          <div class="tl-item"><div class="tl-badge">5</div><div><b>深淵再生</b><div style="color:var(--muted);font-size:13px">行動進入下一階段。</div></div></div>
+          <div class="tl-item reveal reveal-left"><div class="tl-badge">1</div><div><b>滲透</b><div style="color:var(--muted);font-size:14px">機器人悄無聲息地進入目標伺服器，如同潛伏於暗影中的刺客。</div></div></div>
+          <div class="tl-item reveal reveal-right"><div class="tl-badge">2</div><div><b>掃描</b><div style="color:var(--muted);font-size:14px">瞬間完成對伺服器結構的全面分析，鎖定所有權限漏洞與關鍵目標。</div></div></div>
+          <div class="tl-item reveal reveal-left"><div class="tl-badge">3</div><div><b>剝離</b><div style="color:var(--muted);font-size:14px">舊有的權力結構被瞬間瓦解，管理員權限被剝奪，防禦系統徹底失效。</div></div></div>
+          <div class="tl-item reveal reveal-right"><div class="tl-badge">4</div><div><b>重塑</b><div style="color:var(--muted);font-size:14px">刪除頻道，創建頻道，更改伺服器名稱。整個世界，按照你的劇本重新上演。</div></div></div>
+          <div class="tl-item reveal reveal-left"><div class="tl-badge">5</div><div><b>宣告</b><div style="color:var(--muted);font-size:14px">在所有頻道與成員私訊中，宣告你的降臨。讓所有人記住是誰主宰了這裡。</div></div></div>
         </div>
       </div>
     </section>
 
-    <section style="padding:64px 18px;position:relative;z-index:2;text-align:center">
-      <div class="section-title">加入我們</div>
-      <p class="section-sub">選擇陣營，成為這場重塑的一部分。</p>
-      <a class="btn btn-primary" href="https://discord.gg/4RHhStYVkC" target="_blank">踏入深淵</a>
+    <section style="padding:100px 18px;position:relative;z-index:2;text-align:center; background-color: rgba(0,0,0,0.1);">
+      <div class="section-title reveal">抉擇的時刻</div>
+      <p class="section-sub reveal" style="transition-delay: 0.2s;">你可以繼續做一個旁觀者，或者，拿起這把武器，成為舞台上唯一的主角。</p>
+      <a class="btn btn-primary reveal" style="transition-delay: 0.4s; padding: 18px 36px; font-size: 1.1rem;" href="https://discord.gg/4RHhStYVkC" target="_blank">獲取你的武器</a>
     </section>
   </main>
 
   <footer>
-    <div>&copy; 2025 n0lost. 潛伏已結束。 Designed for impact.</div>
+    <div>&copy; 2025 n0lost. 為混沌與力量而生。</div>
+    <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 8px;">僅供教育與研究目的。濫用後果自負。</div>
   </footer>
 
   <script>
-    // Particle background with drifting glow
+    // 自訂游標
+    const cursor = document.querySelector('.cursor');
+    document.addEventListener('mousemove', e => {
+        cursor.style.transform = `translate3d(${e.clientX - 10}px, ${e.clientY - 10}px, 0)`;
+    });
+    document.querySelectorAll('a, button, .card').forEach(el => {
+        el.addEventListener('mouseover', () => cursor.classList.add('hovered'));
+        el.addEventListener('mouseout', () => cursor.classList.remove('hovered'));
+    });
+
+    // 滾動進度條
+    const scrollProgress = document.getElementById('scroll-progress');
+    document.addEventListener('scroll', () => {
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercentage = (scrollTop / scrollHeight) * 100;
+        scrollProgress.style.width = scrollPercentage + '%';
+    });
+
+    // 增強的互動式粒子背景
     (function(){
-      const canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d');
-      let w=canvas.width=innerWidth,h=canvas.height=innerHeight;let particles=[];
+      const canvas = document.getElementById('particle-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = innerWidth;
+      let h = canvas.height = innerHeight;
+      let particles = [];
+      let mouse = { x: null, y: null, radius: 150 };
+
+      window.addEventListener('mousemove', (event) => { mouse.x = event.clientX; mouse.y = event.clientY; });
+      window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
       function rand(min,max){return Math.random()*(max-min)+min}
-      function init(){particles=[];for(let i=0;i<120;i++){particles.push({x:rand(0,w),y:rand(0,h),r:rand(1,3),vx:rand(-.5,.5),vy:rand(-.3,.3),a:rand(.2,.6)})}}
-      function step(){ctx.clearRect(0,0,w,h);for(const p of particles){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;ctx.beginPath();ctx.fillStyle=`rgba(239,68,68,${p.a})`;ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()}requestAnimationFrame(step)}
-      addEventListener('resize',()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight;init()});init();step();
+      function init(){
+        particles = [];
+        const particleCount = Math.floor(w * h / 15000);
+        for(let i=0; i < particleCount; i++){
+          particles.push({
+            x: rand(0,w), y: rand(0,h),
+            r: rand(1, 2.5),
+            vx: rand(-.3,.3), vy: rand(-.3,.3),
+            a: rand(.2, .8),
+            baseX: this.x, baseY: this.y,
+            density: rand(2, 10),
+          });
+        }
+      }
+
+      function step(){
+        ctx.clearRect(0,0,w,h);
+        for(let i = 0; i < particles.length; i++){
+          const p = particles[i];
+          let dx = mouse.x - p.x;
+          let dy = mouse.y - p.y;
+          let distance = Math.sqrt(dx*dx + dy*dy);
+          if (distance < mouse.radius) {
+            let forceDirectionX = dx / distance;
+            let forceDirectionY = dy / distance;
+            let maxDistance = mouse.radius;
+            let force = (maxDistance - distance) / maxDistance;
+            let directionX = forceDirectionX * force * p.density * -1;
+            let directionY = forceDirectionY * force * p.density * -1;
+            p.x += directionX;
+            p.y += directionY;
+          } else { p.x += p.vx; p.y += p.vy; }
+          if(p.x < 0) p.x=w; if(p.x > w) p.x=0;
+          if(p.y < 0) p.y=h; if(p.y > h) p.y=0;
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(239,68,68,${p.a})`;
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fill();
+        }
+        for(let i = 0; i < particles.length; i++) {
+            for (let j = i; j < particles.length; j++) {
+                const p1 = particles[i]; const p2 = particles[j];
+                const distance = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(239, 68, 68, ${1 - distance/100})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(step);
+      }
+      addEventListener('resize',()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight;mouse.radius=150;init();});
+      init();step();
     })();
 
-    // Timeline animation reveal
+    // 滾動觸發動畫
     document.addEventListener('DOMContentLoaded',()=>{
-      const items=document.querySelectorAll('.tl-item');
-      const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1});
-      items.forEach(i=>obs.observe(i));
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     });
 
-    // Counter animation
-    function animateCounter(id, target){
-      const el=document.getElementById(id);let c=0;const step=target/100;function update(){c+=step;if(c>=target){c=target}el.textContent=Math.floor(c);if(c<target){requestAnimationFrame(update)}}update()}
-    window.addEventListener('load',()=>{
-      animateCounter('counter1',429);
-      animateCounter('counter2',777);
-      animateCounter('counter3',99);
+    // Hero 標題打字機效果
+    (function() {
+        const titleEl = document.getElementById('hero-title'); if (!titleEl) return;
+        const words = ["秩序重定義", "絕對統治"];
+        let wordIndex = 0; let charIndex = 0; let isDeleting = false;
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                titleEl.textContent = currentWord.substring(0, charIndex - 1); charIndex--;
+            } else {
+                titleEl.textContent = currentWord.substring(0, charIndex + 1); charIndex++;
+            }
+            if (!isDeleting && charIndex === currentWord.length) { setTimeout(() => isDeleting = true, 3000); } 
+            else if (isDeleting && charIndex === 0) { isDeleting = false; wordIndex = (wordIndex + 1) % words.length; }
+            const typeSpeed = isDeleting ? 100 : 200;
+            setTimeout(type, typeSpeed);
+        }
+        type();
+    })();
+    
+    // 3D 卡片效果
+    const cards3D = document.querySelectorAll('.card-3d');
+    cards3D.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const { width, height } = rect;
+        const rotateX = (y / height - 0.5) * -20;
+        const rotateY = (x / width - 0.5) * 20;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+      });
     });
+
   </script>
 </body>
 </html>
+
+
