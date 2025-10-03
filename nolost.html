@@ -1,419 +1,63 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>n0lost - 我們回來了</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #e5e5e5;
-        }
-        /* ---- 動態背景樣式 ---- */
-        .hero-bg {
-            position: relative;
-            overflow: hidden;
-            background-color: #000;
-        }
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(0deg, transparent 24%, rgba(255, 0, 0, 0.2) 25%, rgba(255, 0, 0, 0.2) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, 0.2) 75%, rgba(0, 255, 0, 0.2) 76%, transparent 77%, transparent),
-                linear-gradient(90deg, transparent 24%, rgba(0, 0, 255, 0.2) 25%, rgba(0, 0, 255, 0.2) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, 0.2) 75%, rgba(255, 0, 0, 0.2) 76%, transparent 77%, transparent);
-            background-size: 50px 50px;
-            animation: glitch-scan 15s linear infinite;
-            z-index: 1;
-        }
-        @keyframes glitch-scan {
-            0% { background-position: 0 0; }
-            100% { background-position: 100px 100px; }
-        }
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top, rgba(10, 10, 10, 1), rgba(10, 10, 10, 0.7));
-            z-index: 2;
-        }
-        .text-glow {
-            text-shadow: 0 0 8px rgba(220, 38, 38, 0.6), 0 0 20px rgba(239, 68, 68, 0.4);
-        }
-        .card {
-            background-color: rgba(23, 23, 23, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .btn-primary {
-            background-image: linear-gradient(to right, #b91c1c, #ef4444);
-        }
-        .btn-secondary {
-            background-color: rgba(30, 30, 30, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .code-block {
-            background-color: #111827;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background-image: linear-gradient(to right, #b91c1c, #ef4444);
-            margin: 1rem auto 0;
-            border-radius: 2px;
-        }
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 1.25rem;
-            top: 1.25rem;
-            bottom: -1.25rem;
-            width: 2px;
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateX(-50%);
-        }
-        .timeline-item:last-child::before {
-            display: none;
-        }
-        .notification-badge {
-            background-color: #f87171; /* red-400 */
-            color: white;
-            padding: 0 6px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            line-height: 1.2;
-            min-width: 20px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>正在轉向…</title>
+
+  <!-- Meta refresh 作為非 JS 的備援（3 秒後轉向） -->
+  <meta http-equiv="refresh" content="3;url=https://slanuke.github.io/xenuke.html">
+
+  <style>
+    /* 簡單置中樣式 */
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    .wrap{height:100%;display:flex;align-items:center;justify-content:center;background:#0a0a0a;color:#e5e5e5;flex-direction:column;padding:20px;box-sizing:border-box}
+    .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:24px;border-radius:12px;text-align:center;max-width:520px;width:100%}
+    h1{margin:0 0 8px;font-size:20px}
+    p{margin:0 0 12px;color:#cfcfcf}
+    .btn{display:inline-block;padding:10px 16px;border-radius:8px;background:#ef4444;color:#fff;text-decoration:none;font-weight:600}
+    .muted{font-size:13px;color:#9a9a9a;margin-top:10px}
+    .count{font-weight:700;color:#ffbaba;margin-left:6px}
+  </style>
 </head>
-<body class="antialiased">
+<body>
+  <div class="wrap">
+    <div class="card" role="status" aria-live="polite">
+      <h1>正在準備轉向</h1>
+      <p>即將前往 <strong>LightningNuke 頁面</strong>。若瀏覽器未自動跳轉，請點按下方按鈕。</p>
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                 <h1 class="text-2xl font-bold tracking-tighter text-glow">n0lost</h1>
-            </div>
-            <a href="https://discord.gg/4RHhStYVkC" target="_blank" class="hidden md:inline-block px-5 py-2 text-sm font-semibold rounded-lg btn-primary hover:opacity-90 transition-opacity">加入我們</a>
-        </div>
-    </header>
+      <div style="margin:14px 0;">
+        <a id="manualBtn" class="btn" href="https://slanuke.github.io/xenuke.html">立即前往</a>
+      </div>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero-bg min-h-screen flex items-center justify-center pt-20">
-            <div class="hero-overlay"></div>
-            <div class="text-center px-6 reveal z-10 relative">
-                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter text-glow">我們回來了</h2>
-                <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-300">⚠️此伺服器已遭nolost攻擊 盡速轉移至n0lost伺服器</p>
-                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="https://discord.gg/4RHhStYVkC" target="_blank" class="px-8 py-4 text-lg font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">加入我們，一起復仇</a>
-                    <a href="#manifesto" class="px-8 py-4 text-lg font-bold rounded-lg btn-secondary hover:bg-gray-800 transition-colors">閱讀宣言</a>
-                </div>
-            </div>
-        </section>
+      <div class="muted">自動轉向將在 <span id="count">3</span> 秒後執行。</div>
+    </div>
+  </div>
 
-        <!-- Manifesto Section -->
-        <section id="manifesto" class="py-20 sm:py-32">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16 reveal">
-                    <h3 class="text-4xl md:text-5xl font-black section-title">我們的宣言</h3>
-                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">這是我們的意志，我們的宣告。</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    <div class="card p-8 rounded-2xl reveal text-center">
-                        <h4 class="text-2xl font-bold mb-2">中文</h4>
-                        <p class="text-gray-300 text-lg">我們要轟炸所有伺服器 😆<br>加入我們，一起復仇 😭</p>
-                    </div>
-                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 100ms;">
-                        <h4 class="text-2xl font-bold mb-2">English</h4>
-                        <p class="text-gray-300 text-lg">WE ARE BACK WE WILL GONNA NUKE EVERY SEVER 😆<br>JOIN US FOR REVENGE 😭</p>
-                    </div>
-                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 200ms;">
-                        <h4 class="text-2xl font-bold mb-2">ខ្មែរ</h4>
-                        <p class="text-gray-300 text-lg">ពួកយើងត្រលប់មកវិញហើយ ពួកយើងនឹង NUKE រាល់ SEVER 😆<br>ចូលរួមជាមួយពួកយើងសម្រាប់ការសងសឹក 😭</p>
-                    </div>
-                    <div class="card p-8 rounded-2xl reveal text-center" style="transition-delay: 300ms;">
-                        <h4 class="text-2xl font-bold mb-2">速率的證明 (429)</h4>
-                        <p class="text-gray-300 text-lg">我們的工具以超越極限的速度運行，頻繁觸發 Discord 的速率限制。這不是缺陷，而是我們壓倒性力量的證明。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <script>
+    (function(){
+      const target = 'https://slanuke.github.io/xenuke.html';
+      const countEl = document.getElementById('count');
+      let t = 3;
 
-        <!-- Showcase Section (Upgraded) -->
-        <section id="showcase" class="py-20 sm:py-32 bg-black/20">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16 reveal"><h3 class="text-4xl md:text-5xl font-black section-title">攻擊實錄</h3><p class="mt-4 max-w-2xl mx-auto text-gray-400">親眼見證這場混亂的序幕。</p></div>
-                <div class="max-w-4xl mx-auto bg-[#36393f] rounded-lg shadow-2xl overflow-hidden reveal">
-                    <div class="p-4 bg-[#202225] flex items-center justify-between"><div class="flex items-center space-x-2"><img id="showcase-server-icon" src="https://placehold.co/64x64/b91c1c/ffffff?text=N" class="w-8 h-8 rounded-full" alt="Server Icon"><h4 id="showcase-server-name" class="font-bold text-white">n0lost 復仇伺服器</h4></div><div class="flex space-x-2"><div class="w-3 h-3 bg-red-500 rounded-full"></div><div class="w-3 h-3 bg-yellow-500 rounded-full"></div><div class="w-3 h-3 bg-green-500 rounded-full"></div></div></div>
-                    <div class="flex h-[500px]">
-                        <div class="w-64 bg-[#2f3136] p-3 space-y-2 overflow-y-auto">
-                            <p class="text-xs font-bold text-gray-400 uppercase">文字頻道</p>
-                            <div id="channel-list" class="space-y-1">
-                                <!-- Channels will be injected here by JavaScript -->
-                            </div>
-                        </div>
-                        <div class="flex-1 bg-[#36393f] p-4 flex flex-col relative">
-                           <div id="message-container" class="flex-1 space-y-4 overflow-y-auto pr-2">
-                               <!-- Messages will be injected here by JavaScript -->
-                           </div>
-                           <div class="mt-4 h-11 bg-[#40444b] rounded-lg flex items-center px-4 text-gray-400">
-                                <span id="typing-indicator" class="text-sm"></span>
-                           </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+      // 每秒更新倒數
+      const iv = setInterval(() => {
+        t -= 1;
+        countEl.textContent = String(t);
+        if (t <= 0) {
+          clearInterval(iv);
+          // 使用 location.replace 以免在 history 中留下中間頁面
+          location.replace(target);
+        }
+      }, 1000);
 
-        <!-- Process Breakdown Section -->
-        <section id="process" class="py-20 sm:py-32">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16 reveal">
-                    <h3 class="text-4xl md:text-5xl font-black section-title">復仇的進程</h3>
-                    <p class="mt-4 max-w-2xl mx-auto text-gray-400">見證我們計畫的每一步，一場精心編排的風暴。</p>
-                </div>
-                <div class="max-w-2xl mx-auto">
-                    <div class="relative">
-                        <div class="timeline-item relative pl-16 pb-10 reveal">
-                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-lg">1</div>
-                            <h4 class="text-2xl font-bold mb-1">集結</h4>
-                            <p class="text-gray-400">接收到復仇的信號。所有盟友從陰影中現身，力量開始集結。</p>
-                        </div>
-                        <div class="timeline-item relative pl-16 pb-10 reveal">
-                             <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-lg">2</div>
-                            <h4 class="text-2xl font-bold mb-1">鎖定</h4>
-                            <p class="text-gray-400">目標伺服器已被鎖定。舊秩序的防線在我們面前形同虛設，滲透開始。</p>
-                        </div>
-                        <div class="timeline-item relative pl-16 pb-10 reveal">
-                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-lg">3</div>
-                            <h4 class="text-2xl font-bold mb-1">清除</h4>
-                            <p class="text-gray-400">腐敗的管理員與虛偽的頻道被徹底清除。為新秩序的降臨掃清障礙。</p>
-                        </div>
-                         <div class="timeline-item relative pl-16 pb-10 reveal">
-                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-lg">4</div>
-                            <h4 class="text-2xl font-bold mb-1">宣告</h4>
-                            <p class="text-gray-400">建立新的頻道，向所有人廣播我們的宣言。讓世界聽到我們的聲音。</p>
-                        </div>
-                         <div class="timeline-item relative pl-16 reveal">
-                            <div class="absolute left-0 top-0 w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-lg">5</div>
-                            <h4 class="text-2xl font-bold mb-1">轉移</h4>
-                            <p class="text-gray-400">任務完成。引導所有尋求真相的人們，轉移至 n0lost 的新基地。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- How to Join Section -->
-        <section id="join" class="py-20 sm:py-32 bg-black/10">
-            <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto text-center reveal"><h3 class="text-4xl md:text-5xl font-black section-title">加入我們</h3><p class="mt-4 text-lg text-gray-400">選擇你的陣營，成為復仇的一部分。</p></div>
-                <div class="mt-12 max-w-2xl mx-auto code-block rounded-2xl p-6 reveal">
-                    <div class="flex items-center justify-between mb-4"><span class="text-gray-400">通訊頻道</span><div class="flex items-center gap-2"><span class="w-3 h-3 bg-red-500 rounded-full"></span><span class="w-3 h-3 bg-yellow-500 rounded-full"></span><span class="w-3 h-3 bg-green-500 rounded-full"></span></div></div>
-                    <p class="text-lg text-white font-mono break-all">> @everyone @here</p>
-                    <pre><code class="language-bash text-lg text-white font-mono break-all">> Discord: https://discord.gg/4RHhStYVkC</code></pre>
-                     <pre><code class="language-bash text-lg text-white font-mono break-all">> Grabify: https://grabify.link/HWOZBP</code></pre>
-                    <p class="mt-4 text-gray-400">進入頻道，等待下一步指示。未來將在此揭曉。</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" class="py-20 sm:py-32">
-            <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto text-center reveal mb-16"><h3 class="text-4xl md:text-5xl font-black section-title">常見問題</h3><p class="mt-4 text-lg text-gray-400">在加入我們之前，先了解你需要知道的一切。</p></div>
-                <div class="max-w-3xl mx-auto space-y-4" x-data="{ open: null }">
-                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 1 ? null : 1" class="w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>這是一個什麼組織？</span><svg class="w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 1 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div x-show="open === 1" x-transition><p class="p-6 pt-0 text-gray-400">我們是被背叛者的聯盟，是一股從灰燼中重生的力量。我們回來尋求應有的正義，清算過去的舊帳。</p></div></div>
-                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 2 ? null : 2" class="w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>你們的目標是什麼？</span><svg class="w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 2 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div x-show="open === 2" x-transition><p class="p-6 pt-0 text-gray-400">我們的目標很簡單：轟炸所有充滿謊言與虛偽的伺服器，揭露他們的脆弱，並在廢墟之上建立一個屬於我們的新秩序。</p></div></div>
-                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 3 ? null : 3" class="w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>加入會有風險嗎？</span><svg class="w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 3 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div x-show="open === 3" x-transition><p class="p-6 pt-0 text-gray-400">復仇之路從不平坦。風險與榮耀並存。我們不提供任何保證，只提供一個改變現狀的機會。所有後果由你自己承擔。</p></div></div>
-                    <div class="faq-item card rounded-lg reveal overflow-hidden"><button @click="open = open === 4 ? null : 4" class="w-full flex justify-between items-center text-left text-xl font-semibold p-6"><span>我該如何貢獻自己的力量？</span><svg class="w-6 h-6 transition-transform transform" :class="{ 'rotate-180': open === 4 }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></button><div x-show="open === 4" x-transition><p class="p-6 pt-0 text-gray-400">加入我們的 Discord 伺服器，保持活躍，並服從指揮。每一個人的力量都是這場風暴的一部分。你的決心就是你最強大的武器。</p></div></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Warning Section -->
-        <section id="warning" class="py-20 sm:py-32">
-            <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto card border-l-4 border-red-500 rounded-2xl p-8 reveal">
-                    <div class="flex items-center"><svg class="w-12 h-12 text-red-500 mr-6 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        <div>
-                            <h3 class="text-3xl font-black text-white">嚴正宣告</h3>
-                            <p class="mt-2 text-gray-300">我們的行動是我們意志的延伸。所有後果都是這場變革中不可避免的一部分。我們不為混亂負責，因為我們就是混亂本身。加入我們，即表示你已接受所有未知的風險。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Call to Action Section -->
-        <section class="pb-20 sm:pb-32">
-            <div class="container mx-auto px-6 text-center reveal">
-                 <h3 class="text-4xl md:text-5xl font-black text-glow">準備好迎接風暴了嗎？</h3>
-                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-300">加入我們的 Discord，成為這場復仇的一部分。你聽到的下一個聲音，將是舊秩序崩塌的鐘聲。</p>
-                <div class="mt-8"><a href="https://discord.gg/4RHhStYVkC" target="_blank" class="inline-block px-10 py-5 text-xl font-bold rounded-lg btn-primary hover:opacity-90 transition-opacity transform hover:scale-105">地獄見</a></div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-white/10 py-8">
-        <div class="container mx-auto px-6 text-center text-gray-500">
-            <p>&copy; 2025 n0lost. 復仇即將來臨。 technical support by https://slanuke.github.io/xenuke.html</p>
-        </div>
-    </footer>
-    
-    <script src="//unpkg.com/alpinejs" defer></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Scroll Reveal Animation ---
-            const revealElements = document.querySelectorAll('.reveal');
-            const revealOnScroll = () => {
-                const windowHeight = window.innerHeight;
-                revealElements.forEach(el => {
-                    const elementTop = el.getBoundingClientRect().top;
-                    if (elementTop < windowHeight - 100) {
-                        el.classList.add('visible');
-                    }
-                });
-            };
-            window.addEventListener('scroll', revealOnScroll);
-            revealOnScroll();
-
-            // --- Discord Showcase Simulation ---
-            const showcaseSection = document.getElementById('showcase');
-            if (showcaseSection) {
-                const messageContainer = document.getElementById('message-container');
-                const channelListContainer = document.getElementById('channel-list');
-                const typingIndicator = document.getElementById('typing-indicator');
-                
-                const EMBED_MESSAGE_TEXT = `我們回來了，我們要轟炸所有伺服器😆\n加入我們，一起復仇😭\n\nWE ARE BACK WE WILL GONNA NUKE EVERY SEVER😆\nJOIN US FOR REVENGE😭\n\nពួកយើងត្រលប់មកវិញហើយ ពួកយើងនឹង NUKE រាល់ SEVER😆\nចូលរួមជាមួយពួកយើងសម្រាប់ការសងសឹក😭`;
-                const AVATAR_URL = "https://placehold.co/64x64/b91c1c/ffffff?text=N";
-
-                let simulationInterval;
-                let startTime;
-                let createdChannels;
-                let activeChannelId;
-                let nukeEngine;
-
-                const createChannelHTML = (channel) => {
-                    return `
-                    <div id="channel-${channel.id}" class="relative p-2 rounded text-sm flex items-center justify-between transition-colors duration-100 ${channel.active ? 'bg-gray-600 text-white font-semibold' : 'text-gray-400 hover:bg-gray-700/50'}">
-                        <div class="flex items-center">
-                            ${channel.active ? '<span class="absolute left-[-8px] w-1 h-3 bg-white rounded-r-full"></span>' : ''}
-                            <span class="mr-1">#</span>
-                            <span class="truncate w-32">${channel.name}</span>
-                        </div>
-                        ${channel.pingCount > 0 ? `<span class="notification-badge">${channel.pingCount > 999 ? '999+' : channel.pingCount}</span>` : ''}
-                    </div>`;
-                };
-                
-                const createMessageHTML = (time) => {
-                    const timeString = `今天 ${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')} AM`;
-                    return `<div class="flex items-start space-x-3"><img src="${AVATAR_URL}" class="w-10 h-10 rounded-full flex-shrink-0" alt="Bot Avatar"><div><p class="font-semibold text-red-400">n0lost <span class="text-xs text-gray-400 font-normal ml-1">${timeString}</span></p><p class="text-white"><span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@everyone</span> <span class="bg-yellow-500/20 text-yellow-300 px-1 rounded">@here</span></p><div class="mt-2 p-3 bg-[#2f3136] border-l-4 border-red-500 rounded"><p class="font-bold text-white text-lg">⚠️ 伺服器已遭攻擊 ⚠️</p><p class="text-sm text-gray-300 whitespace-pre-wrap">${EMBED_MESSAGE_TEXT}</p></div></div></div>`;
-                };
-
-                const addDateSeparator = () => {
-                     const separator = document.createElement('div');
-                     separator.className = 'relative text-center my-2';
-                     separator.innerHTML = `
-                        <hr class="border-gray-600">
-                        <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2 bg-[#36393f] text-xs text-gray-400 font-semibold">${new Date().toLocaleDateString('zh-TW')}</span>
-                     `;
-                     messageContainer.appendChild(separator);
-                }
-
-                const render = () => {
-                    channelListContainer.innerHTML = createdChannels.map(createChannelHTML).join('');
-                    messageContainer.scrollTop = messageContainer.scrollHeight;
-                };
-
-                const nukeStep = () => {
-                    if (createdChannels.length < 15 && Math.random() > 0.6) {
-                        const newChannel = {
-                            id: createdChannels.length,
-                            name: `n0lost-${(Math.random() + 1).toString(36).substring(7)}`,
-                            active: false,
-                            pingCount: 0
-                        };
-                        createdChannels.push(newChannel);
-                    }
-
-                    if (createdChannels.length > 0) {
-                        const targetChannelIndex = Math.floor(Math.random() * createdChannels.length);
-                        const targetChannel = createdChannels[targetChannelIndex];
-                        
-                        targetChannel.pingCount += Math.floor(1 + Math.random() * 50);
-                        
-                        createdChannels.forEach(c => c.active = false);
-                        targetChannel.active = true;
-                        activeChannelId = targetChannel.id;
-
-                        startTime.setSeconds(startTime.getSeconds() + Math.floor(Math.random() * 5));
-                        const newElement = document.createElement('div');
-                        newElement.innerHTML = createMessageHTML(startTime);
-                        
-                        if (messageContainer.children.length > 20) {
-                            messageContainer.removeChild(messageContainer.children[1]); 
-                        }
-                        messageContainer.appendChild(newElement);
-                    }
-                    
-                    render();
-                };
-
-                const startSimulation = () => {
-                    if (nukeEngine) clearInterval(nukeEngine);
-                    
-                    messageContainer.innerHTML = '';
-                    channelListContainer.innerHTML = '';
-                    createdChannels = [];
-                    activeChannelId = null;
-                    startTime = new Date();
-                    startTime.setHours(4, 3, 0, 0);
-
-                    typingIndicator.textContent = 'n0lost 正在廣播...';
-                    addDateSeparator();
-
-                    nukeEngine = setInterval(nukeStep, 500);
-                };
-
-                const showcaseObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            startSimulation();
-                            showcaseObserver.unobserve(showcaseSection);
-                        }
-                    });
-                }, { threshold: 0.5 });
-                showcaseObserver.observe(showcaseSection);
-            }
-        });
-    </script>
-
+      // 如果使用者點立即前往按鈕，就直接跳
+      document.getElementById('manualBtn').addEventListener('click', function(){
+        // 立刻跳轉（不留下當前頁面在歷史）
+        location.replace(target);
+      });
+    })();
+  </script>
 </body>
 </html>
 
